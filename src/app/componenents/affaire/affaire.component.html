@@ -1,0 +1,159 @@
+<app-navbar></app-navbar>
+
+<p-contextMenu [target]="context_menu" [model]="items" ></p-contextMenu>
+
+
+<div  #context_menu  class="card" style="margin-top: 1rem; height: 100vh">
+  <div class="p-d-flex">
+    <div class="p-col-6">
+      <p-fieldset legend="Mes affaires">
+
+        <div [hidden]="affairesLoading == false" class="p-field p-col-12 p-md-6">
+          <p-skeleton styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="10rem" height="4rem"></p-skeleton>
+        </div>
+
+        <button
+          style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
+          iconPos="left" label="Nouvelle affaire">
+        </button>
+
+
+        <p-table
+         [scrollable]="true" scrollHeight="200px"
+          [resizableColumns]="true"
+          [value]="userAffaires"
+          (onRowUnselect)="onRowUnselect()"
+          selectionMode="single" [(selection)]="affaire" dataKey="id"
+          styleClass="p-datatable-sm p-datatable-gridlines ">
+          <ng-template pTemplate="colgroup">
+            <colgroup>
+              <col style="width:5%">
+              <col style="width:50%">
+              <col style="width:35%">
+              <col style="width:15%">
+            </colgroup>
+          </ng-template>
+          <ng-template pTemplate="header" >
+            <tr >
+              <th pResizableColumn></th>
+              <th pResizableColumn>Numero</th>
+              <th pResizableColumn>Nom</th>
+              <th pResizableColumn>Statut</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-affaire>
+            <tr (dblclick)="onAffaireRowDblClick(affaire)" [pSelectableRowDblClick]="affaire">
+              <td style="font-weight: bold"><i class="pi pi-folder-open"></i></td>
+              <td>{{affaire.numeroMatricule}}</td>
+              <td>{{affaire.nom}}</td>
+              <td>{{affaire.statut}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-fieldset>
+    </div>
+
+    <p-divider layout="vertical"></p-divider>
+
+    <div class="p-col-6">
+
+      <p-fieldset [hidden]="showAffaire == false" legend="Details" [style]="{height: '100%'}">
+
+        <div>
+          <p-scrollPanel [style]="{height: '500px'}"  >
+
+            <div>
+              <h5>Affaire</h5>
+              <hr>
+              <table class="task" style="border: none;font-size: 0.9rem !important;">
+                <tr>
+                  <td style="width: 45%">Numero de dossier: </td>
+                  <td>{{affaire?.numeroMatricule}}</td>
+                </tr>
+                <tr>
+                  <td style="width: 45%">Nom: </td>
+                  <td>{{affaire?.nom}}</td>
+                </tr>
+                <tr>
+                  <td>Statut: </td>
+                  <td>{{affaire?.statut}}</td>
+                </tr>
+                <tr>
+                  <td>Accreditation: </td>
+                  <td>Niveau : {{affaire?.niveauAccreditation}}</td>
+                </tr>
+                <tr>
+                  <td>Crée le: </td>
+                  <td>{{affaire?.createdAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                </tr>
+                <tr>
+                  <td>Departement en charge</td>
+                  <td style="text-transform: full-width">{{affaire?.departement.nom}}</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <h5>Rapport initial</h5>
+              <hr>
+              <p style="font-size: 0.9rem">
+                {{affaire?.resume}}
+              </p>
+            </div>
+
+
+            <div>
+              <h5>Affectés a l'affaire</h5>
+              <hr>
+              <div style="margin-bottom: 1rem; text-align: center!important;">
+                <p-table
+                  [scrollable]="true" scrollHeight="100px"
+                  [resizableColumns]="true"
+                  [value]="affaire?.affaireUtilisateurs"
+                  selectionMode="single" dataKey="id"
+                  styleClass="p-datatable-sm p-datatable-gridlines ">
+                  <ng-template pTemplate="colgroup">
+                    <colgroup>
+                      <col style="width:14%">
+                      <col style="width:35%">
+                      <col style="width:25%">
+                    </colgroup>
+                  </ng-template>
+                  <ng-template pTemplate="header" >
+                    <tr>
+                      <th pResizableColumn></th>
+                      <th pResizableColumn>Participant</th>
+                      <th pResizableColumn>Responsabilité</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-affaireUser>
+                    <tr [pSelectableRow]="affaireUser" >
+                      <td>
+                        <i class="pi pi-user"></i>
+                      </td>
+                      <td style="text-transform: uppercase!important;">
+                        {{affaireUser.utilisateur.nom}}  {{affaireUser.utilisateur.prenom}}
+                      </td>
+                      <td>{{affaireUser.responsability}}</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+            <button
+              (click)="affaireDetails()"
+              style="margin-bottom: 1rem" class="p-button-info"
+              pButton type="button"  label="Plus de details....">
+            </button>
+          </p-scrollPanel>
+        </div>
+      </p-fieldset>
+
+
+    </div>
+
+  </div>
+</div>

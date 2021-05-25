@@ -1,0 +1,207 @@
+<app-navbar></app-navbar>
+
+<div  style="font-size: small!important;">
+
+  <p-tabView (onChange)="handleChange($event)" [(activeIndex)]="index" styleClass="affaireTab">
+
+    <div [hidden]="affaireLoading == false">
+      <div  class="p-field p-col-12 p-md-6">
+        <p-skeleton styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton width="10rem" height="4rem"></p-skeleton>
+      </div>
+      <div  class="p-field p-col-12 p-md-6">
+        <p-skeleton styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+        <p-skeleton width="10rem" height="4rem"></p-skeleton>
+      </div>
+    </div>
+
+    <p-tabPanel [hidden]="affaireLoading == true" header="Affaire">
+      <div>
+        <p-scrollPanel [style]="{height: '500px'}"  >
+
+          <div>
+            <h5>Affaire</h5>
+            <hr>
+            <table class="task" style="border: none;font-size: 0.9rem !important;">
+              <tr>
+                <td style="width: 45%">Numero de dossier: </td>
+                <td>{{affaire?.numeroMatricule}}</td>
+              </tr>
+              <tr>
+                <td style="width: 45%">Nom: </td>
+                <td>{{affaire?.nom}}</td>
+              </tr>
+              <tr>
+                <td>Statut: </td>
+                <td *ngIf="affaire?.statut === 'Ouvert'">
+                  <p-tag styleClass="p-mr-2" severity="success" value="{{affaire?.statut}}"></p-tag>
+                </td>
+                <td *ngIf="affaire?.statut !== 'Ouvert'">
+                  <p-tag styleClass="p-mr-2" severity="danger" value="{{affaire?.statut}}"></p-tag>
+                </td>
+              </tr>
+              <tr>
+                <td>Accreditation: </td>
+                <td>Niveau {{affaire?.niveauAccreditation}}</td>
+              </tr>
+              <tr>
+                <td>Crée le: </td>
+                <td>{{affaire?.createdAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+              </tr>
+              <tr>
+                <td>Crée par: </td>
+                <td style="text-transform: uppercase">{{affaire?.createdBy?.nom}} &nbsp; {{affaire?.createdBy?.prenom}}</td>
+              </tr>
+              <tr>
+                <td>Departement en charge</td>
+                <td style="text-transform: full-width">{{affaire?.departement.nom}}</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <h5>Rapport initial</h5>
+            <hr>
+            <p style="font-size: 0.9rem">
+              {{affaire?.resume}}
+            </p>
+          </div>
+
+
+          <div>
+            <h5>Affectés a l'affaire</h5>
+            <hr>
+            <div style="margin-bottom: 1rem;">
+              <button
+                (click)="createAffaireUtilisateur()"
+                style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
+                iconPos="left" label="Ajouter un enqueteur">
+              </button>
+              <p-table
+                class="p-text-center"
+                [scrollable]="true" scrollHeight="100px"
+                [resizableColumns]="true"
+                [value]="affaire?.affaireUtilisateurs"
+                selectionMode="single" dataKey="id"
+                styleClass="p-datatable-sm p-datatable-gridlines ">
+                <ng-template pTemplate="colgroup">
+                  <colgroup>
+                    <col style="width:4%">
+                    <col style="width:35%">
+                    <col style="width:25%">
+                  </colgroup>
+                </ng-template>
+                <ng-template pTemplate="header" >
+                  <tr>
+                    <th pResizableColumn></th>
+                    <th pResizableColumn>Participant</th>
+                    <th pResizableColumn>Responsabilité</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-affaireUser>
+                  <tr [pSelectableRow]="affaireUser" >
+                    <td style="text-align: center!important;">
+                      <i class="pi pi-user"></i>
+                    </td>
+                    <td style="text-transform: uppercase!important;">
+                      {{affaireUser.utilisateur.nom}}  {{affaireUser.utilisateur.prenom}}
+                    </td>
+                    <td>{{affaireUser.responsability}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+
+
+            <!--   Add User to affaire Modal -->
+
+            <p-button (click)="showMaxAffaireUtilisateurDialog()" icon="pi pi-external-link" label="Show"></p-button>
+            <p-dialog header="Ajouter un participant" [(visible)]="addAffaireUtilisateurDisplay" [modal]="true" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
+                      [draggable]="false" [resizable]="false">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <ng-template pTemplate="footer">
+                <p-button icon="pi pi-check" (click)="addAffaireUtilisateurDisplay=false" label="Ok" styleClass="p-button-text"></p-button>
+              </ng-template>
+            </p-dialog>
+
+          </div>
+
+
+          <div>
+            <h5>Consultants</h5>
+            <hr>
+            <div style="margin-bottom: 1rem;">
+              <button
+                style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
+                iconPos="left" label="Ajouter un consultant">
+              </button>
+              <p-table class="my-center-text"
+                [scrollable]="true" scrollHeight="100px"
+                [resizableColumns]="true"
+                [value]="affaire?.canConsults"
+                selectionMode="single" dataKey="id"
+                styleClass="p-datatable-sm p-datatable-gridlines ">
+                <ng-template pTemplate="header" >
+                  <tr>
+                    <th pResizableColumn></th>
+                    <th pResizableColumn>Nom</th>
+                    <th pResizableColumn>Departement</th>
+                    <th pResizableColumn>Date de debut</th>
+                    <th pResizableColumn>Date de fin</th>
+                    <th pResizableColumn>Statut</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-consultations>
+                  <tr [pSelectableRow]="consultations" >
+                      <td colspan="6" >
+                        Aucun consultant
+                      </td>
+                  </tr>
+                </ng-template>
+                <ng-template *ngIf="affaire?.canConsults.lengh == 0"  pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="6">There are no order for this product yet.</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+
+        </p-scrollPanel>
+      </div>
+
+
+
+
+
+    </p-tabPanel>
+
+
+    <p-tabPanel header="Entités">
+      Content 2
+    </p-tabPanel>
+    <p-tabPanel header="Evenements">
+      Content 3
+    </p-tabPanel>
+    <p-tabPanel header="Pieces a convictions">
+      Content 3
+    </p-tabPanel>
+    <p-tabPanel header="Graphes">
+      Content 3
+    </p-tabPanel>
+    <p-tabPanel header="Administration">
+      Content 3
+    </p-tabPanel>
+  </p-tabView>
+
+</div>
+
+

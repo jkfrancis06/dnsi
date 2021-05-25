@@ -1,1 +1,64 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif, “Apple Color Emoji”, “Segoe UI Emoji”, “Segoe UI Symbol”;
+  font-size: 13px!important;
+}
+
+.login-logo {
+  height: 129px;
+  width: 129px;
+}
+
+
+.outofstock {
+  font-weight: 700;
+  color: #FF5252;
+}
+
+.lowstock {
+  font-weight: 700;
+  color: #FFA726;
+}
+
+.instock {
+  font-weight: 700;
+  color: #66BB6A;
+}
+
+table{
+  font-size: small!important;
+}
+
+hr{
+  border-color: #4CAF50!important;
+}
+
+.progress-spinner {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity:0.6; /* see below for cross-browser opacity */
+}
+
+.hideButton{
+  display: none!important;
+}
+
+table.task>tr{
+  height: 1.5rem!important;
+}
+
+affaireTab{
+  font-size: small!important;
+}
+
+

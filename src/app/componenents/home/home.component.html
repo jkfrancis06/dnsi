@@ -1,0 +1,244 @@
+<app-navbar></app-navbar>
+
+
+<p-dialog [draggable]="true" [closable]="false"  [resizable]="true" header="Ajouter une remarque" [(visible)]="displayRemarkModal">
+  Content
+</p-dialog>
+
+<p-contextMenu [target]="context_menu" [model]="items" ></p-contextMenu>
+
+
+
+
+<div #context_menu class="card" style="margin-top: 1rem; height: 100vh" >
+  <div class="p-d-flex">
+    <div class="p-col-6">
+      <p-fieldset legend="Demandes a traîter">
+
+        <div [hidden]="taches_loading == false" class="p-field p-col-12 p-md-6">
+          <p-skeleton styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="10rem" height="4rem"></p-skeleton>
+        </div>
+
+
+        <p-table
+          [scrollable]="true" scrollHeight="200px"
+          [resizableColumns]="true"
+          [value]="taches"
+          selectionMode="single" [(selection)]="tache" dataKey="id"
+          styleClass="p-datatable-sm p-datatable-gridlines ">
+          <ng-template pTemplate="colgroup">
+            <colgroup>
+              <col style="width:11%">
+              <col style="width:55%">
+              <col style="width:15%">
+              <col style="width:25%">
+            </colgroup>
+          </ng-template>
+          <ng-template pTemplate="header" >
+            <tr>
+              <th pResizableColumn>Priorite</th>
+              <th pResizableColumn>Titre</th>
+              <th pResizableColumn>Statut</th>
+              <th pResizableColumn>Expire</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-tache>
+            <tr (dblclick)="onRowSelect(tache)" [pSelectableRowDblClick]="tache" [ngClass]="{'row-accessories': tache.statut === '0'}">
+              <td [ngClass]="{'outofstock': tache.tache.priorite === 3, 'lowstock': tache.tache.priorite === 2}">
+                <i class="pi pi-bookmark"></i>
+              </td>
+              <td>{{tache.tache.titre}}</td>
+              <td *ngIf="tache.statut === '0'">En attente</td>
+              <td *ngIf="tache.statut !== '0'">{{tache.statut}}</td>
+              <td *ngIf="current_timestamp != null && tache?.tache?.expiresAtTimeStamp! <= current_timestamp" style="color: red">Expiré</td>
+              <td *ngIf="current_timestamp != null && tache?.tache?.expiresAtTimeStamp! > current_timestamp">{{tache.tache.expiresIn}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+      </p-fieldset>
+
+      <hr style="margin-top: 1rem">
+
+      <p-fieldset legend="Mes demandes">
+
+        <div [hidden]="taches_loading == false" class="p-field p-col-12 p-md-6">
+          <p-skeleton styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+          <p-skeleton width="10rem" height="4rem"></p-skeleton>
+        </div>
+
+        <p-table
+          [scrollable]="true" scrollHeight="200px"
+          [resizableColumns]="true"
+          [value]="userCreatedTasks"
+          (onRowSelect)="onTaskRowSelect($event)"
+          selectionMode="single" [(selection)]="tache"  dataKey="id"
+          styleClass="p-datatable-sm p-datatable-gridlines ">
+          <ng-template pTemplate="colgroup">
+            <colgroup>
+              <col style="width:11%">
+              <col style="width:60%">
+              <col style="width:29%">
+            </colgroup>
+          </ng-template>
+          <ng-template pTemplate="header" >
+            <tr>
+              <th pResizableColumn>Priorite</th>
+              <th pResizableColumn>Titre</th>
+              <th pResizableColumn>Expire</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-userCreatedTasks>
+            <tr (dblclick)="onTaskRowSelect(userCreatedTasks)" [pSelectableRowDblClick]="userCreatedTasks" [ngClass]="{'row-accessories': userCreatedTasks.statut === '0'}">
+              <td [ngClass]="{'outofstock': userCreatedTasks.priorite === 3, 'lowstock': userCreatedTasks.priorite === 2}">
+                <i class="pi pi-bookmark"></i>
+              </td>
+              <td>{{userCreatedTasks.titre}}</td>
+              <td *ngIf="current_timestamp != null && userCreatedTasks?.expiresAtTimeStamp! <= current_timestamp" style="color: red">Expiré</td>
+              <td *ngIf="current_timestamp != null && userCreatedTasks?.expiresAtTimeStamp! > current_timestamp">{{userCreatedTasks.expiresIn}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+      </p-fieldset>
+
+
+    </div>
+
+    <p-divider layout="vertical"></p-divider>
+
+    <div class="p-col-6">
+
+      <p-fieldset legend="Details" [style]="{height: '100%'}">
+
+        <div *ngIf="show_task == true">
+          <p-scrollPanel [style]="{height: '500px'}"  >
+
+            <div [hidden]="tache_details_loading == false">
+              <div  class="p-field p-col-12 p-md-6">
+                <p-skeleton styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton width="10rem" height="4rem"></p-skeleton>
+              </div>
+              <div  class="p-field p-col-12 p-md-6">
+                <p-skeleton styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+                <p-skeleton width="10rem" height="4rem"></p-skeleton>
+              </div>
+            </div>
+
+            <div>
+              <h5>Demande</h5>
+              <hr>
+              <table class="task" style="border: none;font-size: 0.9rem !important;">
+                <tr>
+                  <td style="width: 45%">Affaire: </td>
+                  <td>{{task?.affaire?.numeroMatricule}}, {{task?.affaire?.nom}}</td>
+                </tr>
+                <tr>
+                  <td>Titre: </td>
+                  <td>{{task?.titre}}</td>
+                </tr>
+                <tr>
+                  <td>Priorité: </td>
+                  <td  [ngClass]="{
+                      'outofstock': task?.priorite! === 3,
+                      'lowstock': task?.priorite! === 2}"
+                       *ngIf="task?.priorite === 3">
+                    Elevé</td>
+                  <td  [ngClass]="{
+                      'outofstock': task?.priorite! === 3,
+                      'lowstock': task?.priorite! === 2}"
+                       *ngIf="task?.priorite === 2">
+                    Moyen</td>
+                  <td  [ngClass]="{
+                      'outofstock': task?.priorite! === 3,
+                      'lowstock': task?.priorite! === 2}"
+                       *ngIf="task?.priorite === 1">
+                    Normal</td>
+                </tr>
+                <tr>
+                  <td>Demandeur: </td>
+                  <td>{{task?.createdBy?.nom}} {{task?.createdBy?.prenom}}</td>
+                </tr>
+                <tr>
+                  <td>Crée le: </td>
+                  <td>{{task?.createdAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                </tr>
+                <tr>
+                  <td>A traiter avant le: </td>
+                  <td>{{task?.expireAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <h5>Resumé</h5>
+              <hr>
+              <p style="font-size: 0.9rem">
+                {{task?.resume}}
+              </p>
+            </div>
+            <div>
+              <h5>Destinataires</h5>
+              <hr>
+              <div style="margin-bottom: 1rem">
+                <p-table
+                  [scrollable]="true" scrollHeight="100px"
+                  [resizableColumns]="true"
+                  [value]="task?.tacheUtilisateurs!"
+                  selectionMode="single" dataKey="id"
+                  styleClass="p-datatable-sm p-datatable-gridlines ">
+                  <ng-template pTemplate="colgroup">
+                    <colgroup>
+                      <col style="width:14%">
+                      <col style="width:30%">
+                      <col style="width:35%">
+                      <col style="width:25%">
+                    </colgroup>
+                  </ng-template>
+                  <ng-template pTemplate="header" >
+                    <tr>
+                      <th pResizableColumn>Statut</th>
+                      <th pResizableColumn>Derniere MAJ</th>
+                      <th pResizableColumn>Utilisateur</th>
+                      <th pResizableColumn>Remarques</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-taskUser>
+                    <tr [pSelectableRow]="taskUser" >
+                      <td *ngIf="taskUser.statut === '0'">
+                        En attente
+                      </td>
+                      <td  *ngIf="taskUser.statut !== '0'">
+                        {{taskUser.statut}}
+                      </td>
+                      <td>{{taskUser.updatedAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                      <td>{{taskUser.utilisateur.nom}} {{taskUser.utilisateur.prenom}}</td>
+                      <td>{{taskUser.remarque}}</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </p-scrollPanel>
+          <div>
+            <button [ngClass]="{'hideButton': (current_timestamp != null && task?.expiresAtTimeStamp! < current_timestamp) || selected_tache_utilisateur_objet.statut !== '0'}" pButton (click)="updateTask(task?.id,1)" icon="pi pi-check" [loading]="confirmIsLoading" type="button" label="Accepter" class="p-button-success p-mr-2 p-mb-2"></button>
+            <button [ngClass]="{'hideButton': (current_timestamp != null && task?.expiresAtTimeStamp! < current_timestamp) || selected_tache_utilisateur_objet.statut !== '0'}"  pButton (click)="updateTask(task?.id,0)" icon="pi pi-times" [loading]="rejectIsLoading" type="button" label="Rejeter" class="p-button-secondary p-mb-2"></button>
+          </div>
+        </div>
+      </p-fieldset>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,42 @@
+
+<p-toast></p-toast>
+
+<div class="p-grid p-nogutter p-justify-center p-align-center" style="margin-top: 15vh">
+  <div class="p-xl-6 p-lg-6 p-md-8 p-sm-10 p-shadow-20">
+    <p-panel header="D.S.I. Connexion" >
+      <form  (ngSubmit)="onSubmit()"  [formGroup]="loginForm">
+        <div class="p-grid p-justify-center p-align-center">
+          <div class="p-xl-3 p-lg-3 p-md-3 p-sm-3">
+            <img src="assets/img/logo.png" class="login-logo">
+          </div>
+          <div class="p-col-12">
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+              <input [class.ng-invalid]="errors.username == true "[class.ng-dirty]="errors.username == true" type="text" formControlName="username" name="username" pInputText placeholder="Nom d'utilisateur" style="margin-right: 1rem">
+            </div>
+            <div class="ui-grid-col-4">
+              <small [hidden]="loginForm.controls['username'].valid || !loginForm.controls['username'].dirty" id="username-help" class="p-error">Le nom d'utilisateur est obligatoire</small>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+              <input [class.ng-invalid]="errors.password == true "[class.ng-dirty]="errors.password == true" type="password" pInputText formControlName="password" class="form-control" name="password" placeholder="Mot de passe" style="margin-right: 1rem">
+            </div>
+            <div class="ui-grid-col-4">
+              <small [hidden]="loginForm.controls['password'].valid || !loginForm.controls['password'].dirty" id="password-help" class="p-error">Le mot de passe est obligatoire</small>
+              <small [hidden]="errors.password == false" class="p-error">Le nom d'utilisateur ou le mot de passe est invalide</small>
+            </div>
+          </div>
+        </div>
+        <p-divider></p-divider>
+        <div class="p-grid">
+          <div class="p-col-12">
+            <button pButton style="width: 100%" label="Connexion"  [loading]="loading[0]" [disabled]="!loginForm.valid"></button>
+          </div>
+        </div>
+      </form>
+    </p-panel>
+
+  </div>
+</div>
