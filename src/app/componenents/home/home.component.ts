@@ -165,12 +165,13 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  onTaskRowSelect(event:any){
+  onTaskRowSelect(data:any){
+    console.log(data)
     this.tache_details_loading = true //loader
-    this.selected_tache_utilisateur = event.id
-    this.selected_tache_utilisateur_objet = event
-    console.log(this.userCreatedTasks)
-    this.apiService.getTask(event.id).subscribe(
+    this.selected_tache_utilisateur = data.id
+    this.selected_tache_utilisateur_objet = data
+    console.log(data.id)
+    this.apiService.getTask(data.id).subscribe(
       response => {
         this.task! = response!
         console.log(this.task)

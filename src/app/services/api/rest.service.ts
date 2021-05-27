@@ -86,8 +86,9 @@ export class RestService {
         'Authorization': 'Bearer '+ token_data.token
       })
     };
+    console.log(id)
 
-    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_TASK  +'/'+ id
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_TASK  +'/'+id
       , httpOptions)
       .pipe(
         catchError(this.handleError)
@@ -190,6 +191,100 @@ export class RestService {
 
   }
 
+
+  getUserDepartementUSers(): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_DEPARTMENT_USERS
+      , httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+
+  createAffaireUtilisateurs(data: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.CREATE_AFFAIRE_UTILISATEUR
+      ,data,
+      httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  removeAffaireUtilisateur(id: number): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.delete(this.constProvider.SERVER_ADDRESS +this.constProvider.REMOVE_AFFAIRE_UTILISATEUR + id
+    ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+
+  getAffaireEntites(id: number): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_AFFAIRE_ENTITES + id
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
 
 
   private handleError (error: HttpErrorResponse) {

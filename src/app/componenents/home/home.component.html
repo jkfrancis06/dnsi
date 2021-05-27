@@ -78,7 +78,6 @@
           [scrollable]="true" scrollHeight="200px"
           [resizableColumns]="true"
           [value]="userCreatedTasks"
-          (onRowSelect)="onTaskRowSelect($event)"
           selectionMode="single" [(selection)]="tache"  dataKey="id"
           styleClass="p-datatable-sm p-datatable-gridlines ">
           <ng-template pTemplate="colgroup">

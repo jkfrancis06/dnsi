@@ -1,31 +1,112 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {MenuItem, MessageService} from "primeng/api";
+import {MenuItem, MessageService, SelectItemGroup} from "primeng/api";
 import {RestService} from "../../services/api/rest.service";
+import {DepUser} from "../../models/depUser";
+import {ConfirmationService} from 'primeng/api';
+
+
+interface City {
+  name: string,
+  code: string
+}
 
 @Component({
   selector: 'app-affaire-details',
   templateUrl: './affaire-details.component.html',
   styleUrls: ['./affaire-details.component.css'],
-  providers: [MessageService]
+  providers: [MessageService,ConfirmationService]
 })
+
+
+
 export class AffaireDetailsComponent implements OnInit {
 
-  index: number = 0;
+
+  index: number = 0;  // tab nav index
+
   id?: string | null = '0';
+
   affaire: any;
   affaireLoading = true;
+
   displayMaximizable: any;
   addAffaireUtilisateurDisplay: any;
+  depUtilisateur!: {
+    id: number;
+    label: string;
+    inactive: boolean;
+  };
+  user: any;
+  selectedDepUtilisateurs: number[] = [];
+  depUtilisateurs: DepUser[] = [];
+  test = 0;
+  selectedAffaireUtilisateur: any;
+
+  // menu api items
+  items: MenuItem[] = [];
+  entiteButtonItems: MenuItem[] = [];
+
+  entites: any[] = [];
+  entite: any;
+
+  // loader
+  loading: boolean = false;
+  personneDialog:Boolean = false;
+  personneSteps: MenuItem[] = [];
+
+
 
   constructor(
     private activatedroute:ActivatedRoute,
     private router: Router,
     private restApi: RestService,
-    private messageService: MessageService
-  ) { }
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {
+    let local = localStorage.getItem('user')
+    if (local != null) {
+      this.user = JSON.parse(local)
+    }
+    console.log(this.user)
+
+  }
 
   ngOnInit(): void {
+
+    this.personneSteps = [{
+      label: 'Informations Generales',
+      routerLink: 'personneGeneralInfo'
+    },
+      {
+        label: 'Role',
+        routerLink: 'personneRole'
+      },
+      {
+        label: 'Fichiers joints',
+        routerLink: 'personneAttachement'
+      }
+    ];
+
+
+
+    this.entiteButtonItems = [
+      {
+        label: 'Personne',
+        icon: 'pi pi-fw pi-user',
+        command: () => {
+          this.showPersonneDialog();
+        }
+      },
+      {
+        label: 'Vehicule',
+        icon: 'fa fa-car'
+      },
+      {
+        label: 'Organisation',
+        icon: 'fa fa-home'
+      }
+    ];
 
     this.activatedroute.paramMap.subscribe(params => {
       if (params.get('id') != null){
@@ -53,7 +134,17 @@ export class AffaireDetailsComponent implements OnInit {
     if (this.index === 0){ // tab affaire
       this.restApi.getAffaire(this.id).subscribe(
         response => {
-           console.log(response)
+          this.restApi.getAffaire(this.id).subscribe(
+            response => {
+              console.log(response)
+              this.affaire = response
+              this.affaireLoading = false
+            },
+            error => {
+              console.log(error)
+              this.handleError(error)
+            }
+          )
         },
         error => {
           console.log(error)
@@ -61,9 +152,26 @@ export class AffaireDetailsComponent implements OnInit {
         }
       )
     }
+
+    if (this.index === 1) {  // tab entités
+      this.restApi.getAffaireEntites(this.affaire.id).subscribe(
+        response => {
+          console.log(response)
+          this.entites = response
+        },
+        error => {
+          console.log(error)
+        }
+      )
+    }
   }
 
   handleError(error: any){
+    if (error.status === 403){
+      console.log('ok')
+      this.messageService.add({severity:'error', summary:'Error', detail:"Vous n'avez pas les autorisations neccessaires pour effectuer cette action." +
+          " Veuillez demander l'acces au proprietaire de la ressource"});
+    }
     if (typeof (error.error.message) === 'undefined'){
       this.showViaService(1)  // if server error
     }else {
@@ -83,11 +191,99 @@ export class AffaireDetailsComponent implements OnInit {
   }
 
 
-  showMaxAffaireUtilisateurDialog() {
+  showMaxAffaireUtilisateurDialog() {  // show dialog to assign user to affaire
+
+    this.depUtilisateurs = [];
+    this.selectedDepUtilisateurs = []
+
+    this.restApi.getUserDepartementUSers().subscribe(
+      response => {
+        console.log(response)
+        for (let i = 0; i < response.length; i++){
+          let responseDepUser: DepUser = {};
+          responseDepUser.id = response[i].id
+          responseDepUser.name = response[i].nom +'  '+ response[i].prenom
+          responseDepUser.inactive = false
+          for (let j= 0; j<  this.affaire?.affaireUtilisateurs?.length; j++){
+            console.log(this.affaire?.affaireUtilisateurs[i])
+            if (this.affaire?.affaireUtilisateurs[j]?.utilisateur?.id === response[i].id){
+              responseDepUser.inactive = true
+            }
+          }
+          this.depUtilisateurs = [...this.depUtilisateurs, responseDepUser];
+        }
+        console.log(this.depUtilisateurs)
+      },
+      error => {
+        this.handleError(error)
+      }
+    )
     this.addAffaireUtilisateurDisplay = true;
   }
 
   createAffaireUtilisateur() {
     this.showMaxAffaireUtilisateurDialog()
+  }
+
+  addUsersToAffaire(){
+    this.addAffaireUtilisateurDisplay=false
+    console.log(this.selectedDepUtilisateurs)
+    for (let i = 0; i< this.selectedDepUtilisateurs.length; i++){
+      let data = {
+        "utilisateur": "/api/utilisateurs/"+ this.selectedDepUtilisateurs[i],
+        "affaire": "/api/affaires/"+ this.affaire.id
+      };
+      console.log(data)
+      this.restApi.createAffaireUtilisateurs(data).subscribe(
+        response => {
+          console.log(response)
+          this.affaire.affaireUtilisateurs.push(response) ;
+        },
+        error => {
+          console.log(error)
+          this.handleError(error)
+        }
+      )
+    }
+    console.log(this.depUtilisateurs);
+  }
+
+
+  confirm(affaireUtilisateur:any) {
+    this.confirmationService.confirm({
+      message: 'Êtes vous sûr de retirer ce participant de l\'affaire?',
+      accept: () => {
+        this.removeAffaireUtilisateur(affaireUtilisateur)
+      }
+    });
+  }
+
+  removeAffaireUtilisateur(affaireUser: any) {
+    this.loading = true
+    console.log(affaireUser)
+    this.restApi.removeAffaireUtilisateur(affaireUser.id).subscribe(
+      response => {
+        let index: number = 0
+        for (let i = 0; i < this.affaire.affaireUtilisateurs.length; i++){
+          if (this.affaire.affaireUtilisateurs[i].id === affaireUser.id){
+            index = i;
+            break;
+          }
+        }
+        console.log(index)
+        console.log(this.affaire.affaireUtilisateurs)
+        this.affaire.affaireUtilisateurs.splice(index,1);
+        this.loading = false
+        console.log(response)
+      },
+      error => {
+        this.loading = false
+        this.handleError(error)
+      }
+    )
+  }
+
+  showPersonneDialog() {
+    this.personneDialog = true
   }
 }

@@ -15,5 +15,9 @@ export class ConstantsService {
   public GET_UTILISATEUR_AFFAIRES = "/api/utilisateur/affaire/get";
   public GET_DEPARTEMENT_AFFAIRES = "/api/departements/";
   public GET_AFFAIRE = "/api/affaires/";
+  public GET_DEPARTMENT_USERS = "/api/departement-users/get";
+  public CREATE_AFFAIRE_UTILISATEUR = "/api/affaire_utilisateurs";
+  public REMOVE_AFFAIRE_UTILISATEUR = "/api/affaire_utilisateurs/";
+  public GET_AFFAIRE_ENTITES = "/api/affaire-entites/get/";
   constructor() { }
 }

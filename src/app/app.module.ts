@@ -39,6 +39,9 @@ import {TabViewModule} from "primeng/tabview";
 import {TagModule} from "primeng/tag";
 import {MessageService} from "primeng/api";
 import {ListboxModule} from "primeng/listbox";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {SplitButtonModule} from "primeng/splitbutton";
+import {StepsModule} from "primeng/steps";
 
 @NgModule({
   declarations: [
@@ -86,7 +89,10 @@ import {ListboxModule} from "primeng/listbox";
     TabMenuModule,
     TabViewModule,
     TagModule,
-    ListboxModule
+    ListboxModule,
+    ConfirmDialogModule,
+    SplitButtonModule,
+    StepsModule
 
   ],
   providers: [
