@@ -74,19 +74,7 @@ export class AffaireDetailsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.personneSteps = [{
-      label: 'Informations Generales',
-      routerLink: 'personneGeneralInfo'
-    },
-      {
-        label: 'Role',
-        routerLink: 'personneRole'
-      },
-      {
-        label: 'Fichiers joints',
-        routerLink: 'personneAttachement'
-      }
-    ];
+
 
 
 
@@ -112,7 +100,6 @@ export class AffaireDetailsComponent implements OnInit {
       if (params.get('id') != null){
         this.id = params.get('id');
       }
-      console.log(this.id)
       this.restApi.getAffaire(this.id).subscribe(
         response => {
           console.log(response)
@@ -125,6 +112,21 @@ export class AffaireDetailsComponent implements OnInit {
         }
       )
     });
+
+
+    this.personneSteps = [{
+      label: 'Informations Generales',
+      routerLink: '/affaire-details/'+this.id+'/general-info'
+    },
+      {
+        label: 'Role',
+        routerLink: '/affaire-details/'+this.id+'/role'
+      },
+      {
+        label: 'Fichiers joints',
+        routerLink:  '/affaire-details/'+this.id+'/fichiers'
+      }
+    ];
 
   }
 

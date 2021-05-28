@@ -1,0 +1,13 @@
+<div class="card">
+
+
+  <ngx-dropzone [expandable]="true" accept="image/*" (change)="onSelect($event)">
+    <ngx-dropzone-label>Envoyer les images ici</ngx-dropzone-label>
+    <ngx-dropzone-image-preview [removable]="true" (removed)="onRemove(f)"  ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f">
+      <ngx-dropzone-label>
+      </ngx-dropzone-label>
+    </ngx-dropzone-image-preview>
+
+  </ngx-dropzone>
+
+</div>

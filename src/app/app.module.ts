@@ -42,6 +42,13 @@ import {ListboxModule} from "primeng/listbox";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {SplitButtonModule} from "primeng/splitbutton";
 import {StepsModule} from "primeng/steps";
+import { InformationsGeneralesComponent } from './componenents/steps/personne/informations-generales/informations-generales.component';
+import {CalendarModule} from "primeng/calendar";
+import { RoleComponent } from './componenents/steps/personne/role/role.component';
+import {EditorModule} from "primeng/editor";
+import { FichiersComponent } from './componenents/steps/personne/fichiers/fichiers.component';
+import {FileUploadModule} from "primeng/fileupload";
+import {NgxDropzoneModule} from "ngx-dropzone";
 
 @NgModule({
   declarations: [
@@ -51,7 +58,10 @@ import {StepsModule} from "primeng/steps";
     NavbarComponent,
     LogoutComponent,
     AffaireComponent,
-    AffaireDetailsComponent
+    AffaireDetailsComponent,
+    InformationsGeneralesComponent,
+    RoleComponent,
+    FichiersComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +102,11 @@ import {StepsModule} from "primeng/steps";
     ListboxModule,
     ConfirmDialogModule,
     SplitButtonModule,
-    StepsModule
+    StepsModule,
+    CalendarModule,
+    EditorModule,
+    FileUploadModule,
+    NgxDropzoneModule
 
   ],
   providers: [

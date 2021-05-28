@@ -1,0 +1,55 @@
+<p-card>
+
+  <ng-template pTemplate="content">
+    <div  class="p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-6">
+        <label for="firstname">Nom</label>
+        <input #nom="ngModel" id="firstname" type="text"  pInputText [(ngModel)]="informationsGenerales.nom" [ngClass]="{'ng-dirty': (nom.invalid && submitted) || (nom.dirty && nom.invalid)}">
+        <small *ngIf="(nom.invalid && submitted) || (nom.dirty && nom.invalid)" class="p-error">Le nom est obligatoire</small>
+      </div>
+      <div class="p-field p-col-6">
+        <label for="lastname">Prenom</label>
+        <input #prenom="ngModel" id="lastname" type="text"  pInputText [(ngModel)]="informationsGenerales.prenom" [ngClass]="{'ng-dirty': (prenom.invalid && submitted) || (prenom.dirty && prenom.invalid)}">
+        <small class="p-error" *ngIf="(prenom.invalid && submitted )|| (prenom.dirty && prenom.invalid)">Lastname is required.</small>
+      </div>
+      <div #mydiv  class="p-field p-col-6">
+        <label for="lastname">Date de naissance</label>
+        <p-calendar  #dateNaissance="ngModel" id="dateNaissance" [monthNavigator]="true" [yearNavigator]="true"
+                     [appendTo]="mydiv"
+                     yearRange="{{yearRange}}"
+                     dateFormat="dd/mm/yy"
+                     [maxDate]="maxDate" [(ngModel)]="informationsGenerales.dateNaissance" inputId="icon"
+        ></p-calendar>
+      </div>
+      <div class="p-field p-col-6">
+        <label for="lastname">Numero de passport</label>
+        <input #numPassport="ngModel" id="numPassport" type="text"  pInputText [(ngModel)]="informationsGenerales.numPassport" [ngClass]="{'ng-dirty': (numPassport.invalid && submitted) || (numPassport.dirty && numPassport.invalid)}">
+      </div>
+      <div class="p-field p-col-6">
+        <label for="lastname">Numero de carte d'identité</label>
+        <input #numCarte="ngModel" id="numCarte" type="text"  pInputText [(ngModel)]="informationsGenerales.numCarte" [ngClass]="{'ng-dirty': (numCarte.invalid && submitted) || (numCarte.dirty && numCarte.invalid)}">
+      </div>
+      <div class="p-field p-col-6">
+        <label for="lastname">Pays d'origine</label>
+        <input #nationalite="ngModel" id="nationalite" type="text"  pInputText [(ngModel)]="informationsGenerales.nationalite" [ngClass]="{'ng-dirty': (nationalite.invalid && submitted) || (nationalite.dirty && nationalite.invalid)}">
+      </div>
+      <div class="p-field p-col-3">
+        <label for="lastname">Nombre d'alias</label>
+        <input value="1" (change)="onAliasNbChange($event)" id="nbAlias" type="number" required pInputText  min="1" max="5">
+      </div>
+
+
+      <div class="p-field p-col-4" *ngFor="let items of items; let i=index" >
+        <label for="lastname">Alias {{i+1}}</label>
+        <input #item="ngModel" type="text" [required]="informationsGenerales.prenom ==='' ||  informationsGenerales.nom ===''" pInputText  [(ngModel)]="informationsGenerales.alias[i]">
+        <small class="p-error" *ngIf="(item.invalid && submitted )|| (item.dirty && item.invalid)">Au moins un alias est requis</small>
+      </div>
+
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="p-grid p-nogutter p-justify-end">
+      <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+    </div>
+  </ng-template>
+</p-card>

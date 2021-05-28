@@ -9,14 +9,15 @@ export class PersonneService {
 
 
   personneInformation = {
-    personneInformation: {
+    informationsGenerales: {
       nom: "",
       prenom: "",
-      dateNaissance: "",
+      dateNaissance: new Date(),
       lieuNaissance: "",
       numPassport: "",
       numCarte: "",
       nationalite: "",
+      alias: []
     },
     roleInformation: {
       role: "",
@@ -26,6 +27,7 @@ export class PersonneService {
 
     }
   }
+
 
   private inputComplete = new Subject<any>();
 
@@ -41,7 +43,7 @@ export class PersonneService {
   }
 
   complete() {
-    this.inputComplete.next(this.personneInformation.personneInformation);
+    this.inputComplete.next(this.personneInformation.informationsGenerales);
   }
 
 }
