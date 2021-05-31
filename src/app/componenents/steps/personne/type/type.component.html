@@ -1,0 +1,20 @@
+
+<p-card>
+  <ng-template pTemplate="content">
+    <div  class="p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="type">Type <span style="color:red">*</span>: </label>
+        <p-listbox required #type id="type" name="type" [options]="types" [(ngModel)]="typeInformation" optionLabel="designation" [style]="{'width':'15rem'}"></p-listbox>
+        <small *ngIf="typeInvalid" class="p-error">Le type est obligatoire</small>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="p-d-flex p-jc-between">
+      <div>
+        <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+      </div>
+    </div>
+  </ng-template>
+
+</p-card>

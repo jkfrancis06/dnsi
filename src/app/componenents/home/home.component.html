@@ -184,9 +184,7 @@
             <div>
               <h5>Resumé</h5>
               <hr>
-              <p style="font-size: 0.9rem">
-                {{task?.resume}}
-              </p>
+              <div [innerHTML]="task?.resume"></div>
             </div>
             <div>
               <h5>Destinataires</h5>

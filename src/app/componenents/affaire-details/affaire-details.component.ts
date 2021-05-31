@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MenuItem, MessageService, SelectItemGroup} from "primeng/api";
 import {RestService} from "../../services/api/rest.service";
 import {DepUser} from "../../models/depUser";
 import {ConfirmationService} from 'primeng/api';
+import {Subscription} from "rxjs";
+import {PersonneService} from "../../services/personne/personne.service";
+import {ConstantsService} from "../../services/general/constants.service";
 
 
 interface City {
@@ -48,6 +51,7 @@ export class AffaireDetailsComponent implements OnInit {
   entiteButtonItems: MenuItem[] = [];
 
   entites: any[] = [];
+
   entite: any;
 
   // loader
@@ -55,6 +59,44 @@ export class AffaireDetailsComponent implements OnInit {
   personneDialog:Boolean = false;
   personneSteps: MenuItem[] = [];
 
+  subscription: Subscription = new Subscription;
+  showEntite: boolean = false;
+
+  displayCustom: boolean = false;
+
+  activeIndex: number = 0;
+
+  responsiveOptions:any[] = [
+    {
+      breakpoint: '1024px',
+      numVisible: 5
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1
+    }
+  ];
+  displayPdfViewer: boolean = false;
+
+  documentSource: string  = "";
+  isPdfVisible: boolean = false;
+  deniedAccess: boolean = false;
+
+  task: any = {
+    titre: "Demande d'access",
+    priorite: 1 as number,
+    expireAt: new Date(new Date().getTime()+(5*24*60*60*1000)),
+    resume: "<b>Demande d'autorisation</b><div>Demande de consultation de ce dossier</div><div><br></div>"
+  };
+
+  submitted: boolean = false;
+  minDateValue = new Date();
+
+  affaireUtilisateurs: any[] = []
 
 
   constructor(
@@ -62,7 +104,9 @@ export class AffaireDetailsComponent implements OnInit {
     private router: Router,
     private restApi: RestService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    public personneService: PersonneService,
+    public constService: ConstantsService
   ) {
     let local = localStorage.getItem('user')
     if (local != null) {
@@ -70,36 +114,18 @@ export class AffaireDetailsComponent implements OnInit {
     }
     console.log(this.user)
 
+
+
   }
 
   ngOnInit(): void {
 
 
-
-
-
-    this.entiteButtonItems = [
-      {
-        label: 'Personne',
-        icon: 'pi pi-fw pi-user',
-        command: () => {
-          this.showPersonneDialog();
-        }
-      },
-      {
-        label: 'Vehicule',
-        icon: 'fa fa-car'
-      },
-      {
-        label: 'Organisation',
-        icon: 'fa fa-home'
-      }
-    ];
-
     this.activatedroute.paramMap.subscribe(params => {
       if (params.get('id') != null){
         this.id = params.get('id');
       }
+
       this.restApi.getAffaire(this.id).subscribe(
         response => {
           console.log(response)
@@ -114,10 +140,15 @@ export class AffaireDetailsComponent implements OnInit {
     });
 
 
-    this.personneSteps = [{
+    this.personneSteps = [
+      {
+        label: 'Type',
+        routerLink: '/affaire-details/'+this.id+'/type'
+      },
+      {
       label: 'Informations Generales',
       routerLink: '/affaire-details/'+this.id+'/general-info'
-    },
+      },
       {
         label: 'Role',
         routerLink: '/affaire-details/'+this.id+'/role'
@@ -125,8 +156,23 @@ export class AffaireDetailsComponent implements OnInit {
       {
         label: 'Fichiers joints',
         routerLink:  '/affaire-details/'+this.id+'/fichiers'
+      },
+      {
+        label: 'Recaptitulatif',
+        routerLink:  '/affaire-details/'+this.id+'/recap'
       }
     ];
+
+    this.subscription = this.personneService.inputComplete$.subscribe((personalInformation) =>{
+      console.log(personalInformation)
+      this.personneDialog = false
+      this.entites.push(personalInformation)
+      this.messageService.add({severity:'success', summary:'Entité crée avec succès'});
+      this.personneService.resetData()
+      this.router.navigate(['/affaire-details/'+this.id])
+      console.log(this.entites)
+    });
+
 
   }
 
@@ -170,6 +216,7 @@ export class AffaireDetailsComponent implements OnInit {
 
   handleError(error: any){
     if (error.status === 403){
+      this.deniedAccess = true
       console.log('ok')
       this.messageService.add({severity:'error', summary:'Error', detail:"Vous n'avez pas les autorisations neccessaires pour effectuer cette action." +
           " Veuillez demander l'acces au proprietaire de la ressource"});
@@ -287,5 +334,65 @@ export class AffaireDetailsComponent implements OnInit {
 
   showPersonneDialog() {
     this.personneDialog = true
+  }
+
+  stepCompleted(index:any) {
+    console.log(index)
+  }
+
+
+  onEntiteRowDblClick(entite: any) {
+    this.entite = entite
+    this.showEntite = true
+    console.log(this.entite)
+  }
+
+  onRowUnselect() {
+    this.showEntite = false
+  }
+
+  imageClick(index: number) {
+    this.activeIndex = index;
+    this.displayCustom = true;
+  }
+
+  showDocumentDialog(src: string) {
+
+    this.restApi.getImage(src).subscribe(
+      response => {
+        this.documentSource = response;
+        console.log(this.documentSource)
+        this.displayPdfViewer = true
+        setTimeout(() => this.isPdfVisible = true);
+        console.log(this.documentSource)
+      }
+    )
+
+  }
+
+
+  createTask() {
+    if (this.task.titre){
+      console.log(this.task)
+      this.task.affaire =  "/api/affaires/"+this.id
+      this.task.priorite = parseInt(this.task.priorite)
+      this.restApi.createTache(this.task).subscribe(
+        response => {
+          let scope = this
+          this.messageService.add({severity:'success', summary:'Tache envoyé avec succès'})
+          setTimeout(function() {
+              scope.router.navigate(['/'])
+            }
+            , 5000);
+        },
+        error => {
+
+        }
+      )
+    }
+    this.submitted = true
+  }
+
+  toCallAfterTimeOut(){
   }
 }

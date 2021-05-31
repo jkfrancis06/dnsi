@@ -30,8 +30,8 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/svg-country-flags/svg",
-                "output": "src/assets/svg-country-flags/svg"
+                "input": "node_modules/ngx-extended-pdf-viewer/assets",
+                "output": "/assets/"
               }
             ],
             "styles": [
@@ -111,8 +111,8 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/svg-country-flags/svg",
-                "output": "src/assets/svg-country-flags/svg"
+                "input": "node_modules/ngx-extended-pdf-viewer/assets",
+                "output": "/assets/"
               }
             ],
             "styles": [

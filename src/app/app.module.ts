@@ -49,6 +49,13 @@ import {EditorModule} from "primeng/editor";
 import { FichiersComponent } from './componenents/steps/personne/fichiers/fichiers.component';
 import {FileUploadModule} from "primeng/fileupload";
 import {NgxDropzoneModule} from "ngx-dropzone";
+import { RecapComponent } from './componenents/steps/personne/recap/recap.component';
+import { TypeComponent } from './componenents/steps/personne/type/type.component';
+import {GalleriaModule} from "primeng/galleria";
+import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
+import {InputTextareaModule} from "primeng/inputtextarea";
+import {NgxDocViewerModule} from "ngx-doc-viewer";
+import {RadioButtonModule} from "primeng/radiobutton";
 
 @NgModule({
   declarations: [
@@ -61,7 +68,9 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     AffaireDetailsComponent,
     InformationsGeneralesComponent,
     RoleComponent,
-    FichiersComponent
+    FichiersComponent,
+    RecapComponent,
+    TypeComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +115,12 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     CalendarModule,
     EditorModule,
     FileUploadModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    GalleriaModule,
+    NgxExtendedPdfViewerModule,
+    InputTextareaModule,
+    NgxDocViewerModule,
+    RadioButtonModule
 
   ],
   providers: [

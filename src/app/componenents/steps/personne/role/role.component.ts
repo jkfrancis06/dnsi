@@ -46,10 +46,16 @@ export class RoleComponent implements OnInit {
     ]
   }
 
+  previousPage() {
+    this.router.navigate(["/affaire-details/"+this.id+"/general-info"]);
+  }
+
   nextPage() {
     this.roleInvalid = this.personneService.personneInformation.roleInformation.role === "";
 
     this.remarqueInvalid = this.personneService.personneInformation.roleInformation.remarque === "";
+
+    console.log(this.personneService.personneInformation)
 
     if (!this.remarqueInvalid && !this.roleInvalid){
       this.router.navigate(["/affaire-details/"+this.id+"/fichiers"]);

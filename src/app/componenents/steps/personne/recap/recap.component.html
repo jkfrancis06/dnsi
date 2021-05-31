@@ -1,0 +1,191 @@
+<div class="p-card" style="margin-top: 2em; font-size: large!important;" >
+  <p-table  [scrollable]="true" scrollHeight="500px" styleClass="p-datatable-gridlines" [value]="[{}]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn>Champ</th>
+        <th pResizableColumn>Valeur</th>
+        <th pResizableColumn>Correspondances</th>
+      </tr>
+    </ng-template>
+    <ng-template *ngIf="personneInfo.type === 1 " pTemplate="body" let-rowData>
+      <tr>
+        <td class="p-text-bold">Nom et prenoms: </td>
+        <td class="p-text-uppercase">{{personneInfo.informationsGenerales.nom}} &nbsp; {{personneInfo.informationsGenerales.prenom}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingNomPrenom.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingNomPrenom.length > 0">
+            <p *ngFor="let items of matchingNomPrenom; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="p-text-bold">Date de naissance: </td>
+        <td>{{personneInfo.informationsGenerales.dateNaissance | date: 'dd-MM-yyyy'}}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="p-text-bold">Nomero de passport: </td>
+        <td>{{personneInfo.informationsGenerales.numPassport}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingNumPassport.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingNumPassport.length > 0">
+            <p *ngFor="let items of matchingNumPassport; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="p-text-bold">Numero de carte d'identité: </td>
+        <td>{{personneInfo.informationsGenerales.numCarte}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingNumCarte.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingNumCarte.length > 0">
+            <p *ngFor="let items of matchingNumCarte; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="p-text-bold">Pays d'origine: </td>
+        <td>{{personneInfo.informationsGenerales.nationalite}}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="p-text-bold">Role: </td>
+        <td>{{personneInfo.roleInformation.role.value}}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td  class="p-text-center p-text-bold" colspan="3">Alias</td>
+      </tr>
+      <tr *ngFor="let alias of personneInfo.informationsGenerales.alias; let i=index">
+        <td class="p-text-bold">Alias &nbsp;{{i+1}}: </td>
+        <td>{{alias}}</td>
+        <td>
+         <!-- <p *ngFor="let items of matchingAlias; let i=index">
+              <span *ngIf="items !== 'empty'">
+                <a *ngFor="let item of items" target="_blank" href="/affaire-details/{{item.affaire.id}}">{{item.affaire.nom}}</a>
+              </span>
+              <span *ngIf="items === 'empty'">
+                  <i style="color: red">
+                    Aucune correspondance trouvée
+                   </i>
+              </span>
+          </p> -->
+        </td>
+      </tr>
+
+    </ng-template>
+
+
+    <ng-template *ngIf="personneInfo.type === 2 " pTemplate="body" let-rowData2>
+      <tr>
+        <td class="p-text-bold">Description: </td>
+        <td class="p-text-uppercase">{{personneInfo.informationsGenerales.description}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingDescription.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingDescription.length > 0">
+            <p *ngFor="let items of matchingDescription; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="p-text-bold">Desciption 2: </td>
+        <td>{{personneInfo.informationsGenerales.description2}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingDescription2.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingDescription2.length > 0">
+            <p *ngFor="let items of matchingDescription2; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="p-text-bold">Categorie: </td>
+        <td>{{personneInfo.categorie}}</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td class="p-text-bold">Immatriculation: </td>
+        <td>{{personneInfo.immatriculation}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingImmatriculation.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingImmatriculation.length > 0">
+            <p *ngFor="let items of matchingImmatriculation; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+
+    </ng-template>
+
+
+    <ng-template *ngIf="personneInfo.type === 3 " pTemplate="body" let-rowData3>
+      <tr>
+        <td class="p-text-bold">Description: </td>
+        <td class="p-text-uppercase">{{personneInfo.informationsGenerales.description}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingDescription.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingDescription.length > 0">
+            <p *ngFor="let items of matchingDescription; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="p-text-bold">Desciption 2: </td>
+        <td>{{personneInfo.description2}}</td>
+        <td>
+          <span style="color: red" *ngIf="matchingDescription2.length <= 0">
+            Aucune correspondance trouvée
+          </span>
+          <span *ngIf="matchingDescription2.length > 0">
+            <p *ngFor="let items of matchingDescription2; let i=index">
+              <a target="_blank" href="/affaire-details/{{items.affaire.id}}">{{items.affaire.nom}}</a>
+            </p>
+          </span>
+        </td>
+      </tr>
+
+    </ng-template>
+
+  </p-table>
+
+
+</div>
+
+<div class="p-d-flex p-jc-between" style="margin-top: 2em">
+  <div>
+    <p-button label="Precedent" (onClick)="previousPage()" icon="pi pi-angle-left"></p-button>
+  </div>
+  <div>
+    <p-button class="p-button-info" label="Terminer" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+  </div>
+</div>

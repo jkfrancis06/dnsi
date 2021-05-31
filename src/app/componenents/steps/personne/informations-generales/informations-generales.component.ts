@@ -44,6 +44,7 @@ export class InformationsGeneralesComponent implements OnInit {
   ngOnInit() {
     this.informationsGenerales = this.personneService.getPersonneInformation().informationsGenerales;
 
+    console.log(this.personneService.personneInformation.type)
     // @ts-ignore
     this.activatedroute.parent.url.subscribe((urlPath) => {
       const url = urlPath[urlPath.length - 1].path;
@@ -53,11 +54,19 @@ export class InformationsGeneralesComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.informationsGenerales.nom && this.informationsGenerales.prenom) {
+    if (this.informationsGenerales.nom || this.informationsGenerales.prenom || this.informationsGenerales.alias[0] ||
+      this.informationsGenerales.description) {
+
       this.personneService.personneInformation.informationsGenerales = this.informationsGenerales;
+      console.log(this.informationsGenerales)
+      if (this.informationsGenerales.type === 1){
+        this.personneService.personneInformation.informationsGenerales.description = this.informationsGenerales.nom
+        this.personneService.personneInformation.informationsGenerales.description2 = this.informationsGenerales.prenom
+      }
       this.router.navigate(["/affaire-details/"+this.id+"/role"]);
       return;
     }
+
 
     this.submitted = true;
   }
@@ -82,4 +91,7 @@ export class InformationsGeneralesComponent implements OnInit {
     this.textBoxFormGroup.push(this.formBuilder.control(''));
   }
 
+  previousPage() {
+    this.router.navigate(["/affaire-details/"+this.id+"/type"]);
+  }
 }

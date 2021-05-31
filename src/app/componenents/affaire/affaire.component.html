@@ -5,6 +5,122 @@
 
 <div  #context_menu  class="card" style="margin-top: 1rem; height: 100vh">
   <div class="p-d-flex">
+    <p-dialog
+      header="Creation d'une affaire" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
+      [draggable]="true" [resizable]="true"
+      [(visible)]="displayAffaireCreateViewer">
+
+      <div class="p-fluid">
+
+
+        <div *ngIf="violation" style="color: red">
+          <p *ngFor="let items of violations; let i=index">- {{items.propertyPath}}: {{items.message}}</p>
+          <p></p>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="nom" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">Nom: </label>
+          <div class="p-col-12 p-md-10">
+            <input #nom="ngModel" required id="nom" type="text"
+                   pInputText placeholder="nom"
+                   [(ngModel)]="newAffaire.nom" [ngClass]="{'ng-dirty': (nom.invalid && submitted) || (nom.dirty && nom.invalid)}">
+            <small *ngIf="(nom.invalid && submitted) || (nom.dirty && nom.invalid)"
+                   class="p-error">Le nom est obligatoire</small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="description" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">Description: </label>
+          <div class="p-col-12 p-md-10">
+            <textarea #description="ngModel" required id="description" type="text"
+                      pInputTextarea placeholder="description"
+                   [(ngModel)]="newAffaire.description" [ngClass]="{'ng-dirty': (description.invalid && submitted) || (description.dirty && description.invalid)}">
+            </textarea>
+            <small *ngIf="(description.invalid && submitted) || (description.dirty && description.invalid)"
+                   class="p-error">La description est obligatoire</small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="niveauAccreditation" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">Niveau d'accreditation: </label>
+          <div class="p-col-12 p-md-10">
+            <input #niveauAccreditation="ngModel" required id="niveauAccreditation" type="number"
+                   min="1" max="{{user.niveauAccreditation}}"
+                   pInputText placeholder="niveau d'accreditation"  value="{{user.niveauAccreditation}}"
+                   [(ngModel)]="newAffaire.niveauAccreditation" [ngClass]="{'ng-dirty': (niveauAccreditation.invalid && submitted) || (niveauAccreditation.dirty && niveauAccreditation.invalid)}">
+            <small *ngIf="(niveauAccreditation.invalid && submitted) || (niveauAccreditation.dirty && niveauAccreditation.invalid)"
+                   class="p-error">Le niveau d'accreditation est obligatoire</small>
+            <small *ngIf="(niveauAccreditation.invalid && submitted) || (niveauAccreditation.dirty && niveauAccreditation.invalid)"
+                   class="p-error">Le niveau d'accreditation est obligatoire</small>
+          </div>
+        </div>
+
+        <div class="p-field p-grid">
+          <label for="resume" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">Rapport initial: </label>
+          <div class="p-col-12 p-md-10">
+            <p-editor #resume="ngModel" id="resume"
+                      [ngClass]="{'ng-dirty': (resume.invalid && submitted) || (resume.dirty && resume.invalid)}"
+                      required [(ngModel)]="newAffaire.resume" [style]="{'height':'420px'}">
+              <p-header>
+              <span class="ql-formats">
+                <select class="ql-size">
+                  <option value="small">Petit</option>
+                  <option selected></option>
+                  <option value="large">Sous-titre</option>
+                  <option value="huge">Titre</option>
+                </select>
+              </span>
+                <span class="ql-formats">
+                <button class="ql-bold" aria-label="Bold"></button>
+                <button class="ql-italic" aria-label="Italic"></button>
+                <button class="ql-underline" aria-label="Underline"></button>
+                <button class="ql-strike" aria-label="Strike"></button>
+              </span>
+                <span class="ql-formats">
+                <select title="Text Color" class="ql-color" defaultValue="rgb(0, 0, 0)">
+                  <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                  ...
+                  <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+                <span class="ql-format-separator"></span>
+                <select title="Background Color" class="ql-background" defaultValue="rgb(255, 255, 255)">
+                  <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                  ...
+                  <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+            </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered"></button>
+                  <button class="ql-list" value="bullet"></button>
+                <select title="Text Alignment" class="ql-align" >
+                  <option selected>Gauche</option>
+                  <option value="center" label="Center"></option>
+                  <option value="right" label="Right"></option>
+                  <option value="justify" label="Justify"></option>
+                </select>
+              </span>
+                <span class="ql-formats">
+                <button aria-label="Link" class="ql-link"></button>
+              </span>
+              </p-header>
+            </p-editor>
+            <small *ngIf="(resume.invalid && submitted) || (resume.dirty && resume.invalid)"
+                   class="p-error">Le rapport initial est obligatoire</small>
+          </div>
+        </div>
+
+        <div class="p-grid">
+          <div class="p-col-2"></div>
+          <div class="p-col-10">
+            <button (click)="createAffaire()" style="width: 100%" pButton pRipple type="button" label="Créer l'affaire" class="p-button-info"></button>
+          </div>
+        </div>
+
+      </div>
+
+
+    </p-dialog>
+
     <div class="p-col-6">
       <p-fieldset legend="Mes affaires">
 
@@ -17,6 +133,7 @@
         </div>
 
         <button
+          (click)="displayAffaireDialog()"
           style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
           iconPos="left" label="Nouvelle affaire">
         </button>
@@ -99,9 +216,7 @@
             <div>
               <h5>Rapport initial</h5>
               <hr>
-              <p style="font-size: 0.9rem">
-                {{affaire?.resume}}
-              </p>
+              <div [innerHTML]="affaire?.resume"></div>
             </div>
 
 
@@ -143,12 +258,12 @@
                 </p-table>
               </div>
             </div>
-            <button
-              (click)="affaireDetails()"
-              style="margin-bottom: 1rem" class="p-button-info"
-              pButton type="button"  label="Plus de details....">
-            </button>
           </p-scrollPanel>
+          <button
+            (click)="affaireDetails()"
+            style="margin-top: 2em" class="p-button-info"
+            pButton type="button"  label="Plus de details....">
+          </button>
         </div>
       </p-fieldset>
 

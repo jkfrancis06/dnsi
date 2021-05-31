@@ -61,8 +61,13 @@
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <div class="p-grid p-nogutter p-justify-end">
-      <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+    <div class="p-d-flex p-jc-between">
+      <div>
+        <p-button label="Precedent" (onClick)="previousPage()" icon="pi pi-angle-left"></p-button>
+      </div>
+      <div>
+        <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+      </div>
     </div>
   </ng-template>
 </p-card>

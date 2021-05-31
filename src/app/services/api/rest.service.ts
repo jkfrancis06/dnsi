@@ -287,6 +287,314 @@ export class RestService {
   }
 
 
+
+
+  uploadFiles(formData: FormData): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+
+    console.log(formData.get('file[]'))
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.UPLOAD_FILES_URL,
+      formData
+      ,{
+        reportProgress: true,
+        observe: 'events',
+        headers: new HttpHeaders({
+          'Access-Control-Allow-Origin': '*',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer '+ token_data.token
+        })
+      })
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  getMatchingNomPrenom(nom: string, prenom: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_ENTITES+"description="+nom+"&description2="+prenom
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+  getMatchingNumPassport(numPassport: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_PERSONNES+"numPassport="+numPassport
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+  getMatchingNumCarte(numCarte: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_PERSONNES+"numCarte="+numCarte
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+  getMatchingImmatriculation(immatriculation: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_VEHICULES+"immatriculation="+immatriculation
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+  getMatchingDescription(description: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_ENTITES+"description="+description
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+  getMatchingAliases(alias: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_PERSONNES+"aliases.alias="+alias
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  getMatchingDescription2(description2: string): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_ENTITES+"description2="+description2
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  createAffaire(affaire: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.POST_AFFAIRE,
+      affaire
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+  getAffaireUtilisateurByAffaireID(affaireID: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.CREATE_AFFAIRE_UTILISATEUR+"?affaire.id="+affaireID
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  createTache(tache: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_TASK,
+      tache
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  getImage(url: string): Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'text/plain',
+        'Accept': 'text/plain',
+      })
+    };
+    let typeUrl = "/file/get/"
+
+    return this.http.get(
+      this.constProvider.SERVER_ADDRESS + typeUrl+url,
+      {responseType: 'text'})
+  }
+
+
+
+  createPersonne(personne: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    let typeUrl= ""
+
+    if (personne.type === 1){
+      typeUrl = this.constProvider.CREATE_PERSONNE
+      personne.description = personne.nom
+      personne.description2 = personne.prenom
+    }
+    if (personne.type === 2){
+      typeUrl = this.constProvider.CREATE_VEHICULE
+    }
+    if (personne.type === 3){
+      typeUrl = this.constProvider.CREATE_ORGANISATION
+    }
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +typeUrl,
+      personne
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
   private handleError (error: HttpErrorResponse) {
     // TODO: seems we cannot use messageService from here...
     const errMsg = (error.message) ? error.message : 'Server error';

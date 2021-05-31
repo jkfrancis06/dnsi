@@ -2,17 +2,41 @@
 
   <ng-template pTemplate="content">
     <div  class="p-fluid p-formgrid p-grid">
-      <div class="p-field p-col-6">
+
+      <div class="p-field p-col-6" *ngIf="personneService.personneInformation.type=== 2 || personneService.personneInformation.type=== 3">
+        <label for="description">Description 1</label>
+        <input [required]="personneService.personneInformation.type=== 2 || personneService.personneInformation.type=== 3" #description="ngModel" id="description" type="text"  pInputText [(ngModel)]="informationsGenerales.description" [ngClass]="{'ng-dirty': (description.invalid && submitted) || (description.dirty && description.invalid)}">
+        <small *ngIf="(description.invalid && submitted) || (description.dirty && description.invalid)" class="p-error">La description est obligatoire</small>
+      </div>
+
+      <div class="p-field p-col-6" *ngIf="personneService.personneInformation.type=== 2 || personneService.personneInformation.type=== 3">
+        <label for="description2">Description 2</label>
+        <input #description2="ngModel" id="description2" type="text"  pInputText [(ngModel)]="informationsGenerales.description2" [ngClass]="{'ng-dirty': (description2.invalid && submitted) || (description2.dirty && description2.invalid)}">
+      </div>
+
+      <div class="p-field p-col-6" *ngIf="personneService.personneInformation.type=== 2">
+        <input #categorie="ngModel" id="categorie" type="text"  pInputText [(ngModel)]="informationsGenerales.categorie" [ngClass]="{'ng-dirty': (categorie.invalid && submitted) || (categorie.dirty && categorie.invalid)}">
+        <small *ngIf="(categorie.invalid && submitted) || (categorie.dirty && categorie.invalid)" class="p-error">La categorie est obligatoire</small>
+      </div>
+
+      <div class="p-field p-col-6" *ngIf="personneService.personneInformation.type=== 2">
+        <label for="immatriculation">Immatriculation</label>
+        <input #immatriculation="ngModel" id="immatriculation" type="text"  pInputText [(ngModel)]="informationsGenerales.immatriculation" [ngClass]="{'ng-dirty': (immatriculation.invalid && submitted) || (immatriculation.dirty && immatriculation.invalid)}">
+      </div>
+
+
+
+      <div class="p-field p-col-6" *ngIf="personneService.personneInformation.type=== 1">
         <label for="firstname">Nom</label>
         <input #nom="ngModel" id="firstname" type="text"  pInputText [(ngModel)]="informationsGenerales.nom" [ngClass]="{'ng-dirty': (nom.invalid && submitted) || (nom.dirty && nom.invalid)}">
         <small *ngIf="(nom.invalid && submitted) || (nom.dirty && nom.invalid)" class="p-error">Le nom est obligatoire</small>
       </div>
-      <div class="p-field p-col-6">
+      <div class="p-field p-col-6" *ngIf="personneService.personneInformation.type=== 1">
         <label for="lastname">Prenom</label>
         <input #prenom="ngModel" id="lastname" type="text"  pInputText [(ngModel)]="informationsGenerales.prenom" [ngClass]="{'ng-dirty': (prenom.invalid && submitted) || (prenom.dirty && prenom.invalid)}">
         <small class="p-error" *ngIf="(prenom.invalid && submitted )|| (prenom.dirty && prenom.invalid)">Lastname is required.</small>
       </div>
-      <div #mydiv  class="p-field p-col-6">
+      <div #mydiv  class="p-field p-col-6"  *ngIf="personneService.personneInformation.type=== 1">
         <label for="lastname">Date de naissance</label>
         <p-calendar  #dateNaissance="ngModel" id="dateNaissance" [monthNavigator]="true" [yearNavigator]="true"
                      [appendTo]="mydiv"
@@ -21,35 +45,40 @@
                      [maxDate]="maxDate" [(ngModel)]="informationsGenerales.dateNaissance" inputId="icon"
         ></p-calendar>
       </div>
-      <div class="p-field p-col-6">
+      <div class="p-field p-col-6"  *ngIf="personneService.personneInformation.type=== 1">
         <label for="lastname">Numero de passport</label>
         <input #numPassport="ngModel" id="numPassport" type="text"  pInputText [(ngModel)]="informationsGenerales.numPassport" [ngClass]="{'ng-dirty': (numPassport.invalid && submitted) || (numPassport.dirty && numPassport.invalid)}">
       </div>
-      <div class="p-field p-col-6">
+      <div class="p-field p-col-6"  *ngIf="personneService.personneInformation.type=== 1">
         <label for="lastname">Numero de carte d'identité</label>
         <input #numCarte="ngModel" id="numCarte" type="text"  pInputText [(ngModel)]="informationsGenerales.numCarte" [ngClass]="{'ng-dirty': (numCarte.invalid && submitted) || (numCarte.dirty && numCarte.invalid)}">
       </div>
-      <div class="p-field p-col-6">
+      <div class="p-field p-col-6"  *ngIf="personneService.personneInformation.type=== 1">
         <label for="lastname">Pays d'origine</label>
         <input #nationalite="ngModel" id="nationalite" type="text"  pInputText [(ngModel)]="informationsGenerales.nationalite" [ngClass]="{'ng-dirty': (nationalite.invalid && submitted) || (nationalite.dirty && nationalite.invalid)}">
       </div>
-      <div class="p-field p-col-3">
+      <div class="p-field p-col-3"  *ngIf="personneService.personneInformation.type=== 1">
         <label for="lastname">Nombre d'alias</label>
-        <input value="1" (change)="onAliasNbChange($event)" id="nbAlias" type="number" required pInputText  min="1" max="5">
+        <input [value]="{'1': personneService.personneInformation.type=== 1}" (change)="onAliasNbChange($event)" id="nbAlias" type="number" required pInputText  min="1" max="5">
       </div>
 
 
-      <div class="p-field p-col-4" *ngFor="let items of items; let i=index" >
+      <div class="p-field p-col-4" *ngFor="let items of items; let i=index">
         <label for="lastname">Alias {{i+1}}</label>
-        <input #item="ngModel" type="text" [required]="informationsGenerales.prenom ==='' ||  informationsGenerales.nom ===''" pInputText  [(ngModel)]="informationsGenerales.alias[i]">
-        <small class="p-error" *ngIf="(item.invalid && submitted )|| (item.dirty && item.invalid)">Au moins un alias est requis</small>
+        <input  #item="ngModel" type="text" [required]="(informationsGenerales.prenom ==='' ||  informationsGenerales.nom ==='') && personneService.personneInformation.type=== 1" pInputText  [(ngModel)]="informationsGenerales.alias[i]">
+        <small  class="p-error" *ngIf="item !== null && ((item.invalid && submitted )|| (item.dirty && item.invalid))">Au moins un alias est requis</small>
       </div>
 
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <div class="p-grid p-nogutter p-justify-end">
-      <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+    <div class="p-d-flex p-jc-between">
+      <div>
+        <p-button label="Precedent" (onClick)="previousPage()" icon="pi pi-angle-left" iconPos="left"></p-button>
+      </div>
+      <div>
+        <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+      </div>
     </div>
   </ng-template>
 </p-card>

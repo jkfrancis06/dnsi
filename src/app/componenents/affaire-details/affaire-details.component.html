@@ -9,7 +9,98 @@
 
 <div  style="font-size: small!important;">
 
-  <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+  <p-dialog [maximizable]="true" [modal]="true" [draggable]="false" [closable]="false" [(visible)]="deniedAccess"  [style]="{width: '50vw'}">
+      <ng-template pTemplate="header">
+        <i class="pi pi-exclamation-triangle" style="font-size: 3rem"></i><span class="p-text-bold">Access refusé. Veuillez remplir ce formulaire afin de demander l'accès</span>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <div class="p-fluid p-formgrid p-grid" #formDiv>
+          <div class="p-field p-col-12 p-md-6">
+            <label for="titre">Titre</label>
+            <input id="titre" type="text" #titre="ngModel" readonly disabled
+                   [(ngModel)]="task.titre"
+                   [ngClass]="{'ng-dirty': (titre.invalid && submitted) || (titre.dirty && titre.invalid)}"
+                   pInputText>
+            <small *ngIf="(titre.invalid && submitted) || (titre.dirty && titre.invalid)" class="p-error">Le titre est obligatoire</small>
+          </div>
+          <div class="p-field p-col-12 p-md-12">
+            <h5>Proprité</h5>
+            <div class="p-field-radiobutton">
+              <p-radioButton name="priorite" value="1" [(ngModel)]="task.priorite" inputId="normal"></p-radioButton>
+              <label for="normal">Normal</label>
+            </div>
+            <div class="p-field-radiobutton">
+              <p-radioButton name="city" value="2" [(ngModel)]="task.priorite" inputId="moyen"></p-radioButton>
+              <label style="color:orange" for="moyen">Moyen</label>
+            </div>
+            <div class="p-field-radiobutton">
+              <p-radioButton name="city" value="3" [(ngModel)]="task.priorite" inputId="eleve"></p-radioButton>
+              <label style="color:red" for="eleve">Elevé</label>
+            </div>
+          </div>
+
+          <div class="p-field p-col-6">
+            <label for="expireAt">A traiter avant le:</label>
+            <p-calendar dateFormat="dd-mm-yy" [showIcon]="true" #expireAt="ngModel" id="expireAt" [showTime]="true" [appendTo]="formDiv" [(ngModel)]="task.expireAt" [minDate]="minDateValue"></p-calendar>
+          </div>
+          <div class="p-field p-col-12 p-md-12">
+            <label for="resume">Remarques</label>
+            <p-editor #resume="ngModel" placeholder="{{task.resume}}"
+                      [ngClass]="{'ng-dirty': (resume.invalid && submitted) || (resume.dirty && resume.invalid)}"
+                      required [(ngModel)]="task.resume" [style]="{'height':'300px'}">
+              <p-header>
+              <span class="ql-formats">
+                <select class="ql-size">
+                  <option value="small">Petit</option>
+                  <option selected></option>
+                  <option value="large">Sous-titre</option>
+                  <option value="huge">Titre</option>
+                </select>
+              </span>
+                <span class="ql-formats">
+                <button class="ql-bold" aria-label="Bold"></button>
+                <button class="ql-italic" aria-label="Italic"></button>
+                <button class="ql-underline" aria-label="Underline"></button>
+                <button class="ql-strike" aria-label="Strike"></button>
+              </span>
+                <span class="ql-formats">
+                <select title="Text Color" class="ql-color" defaultValue="rgb(0, 0, 0)">
+                  <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                  ...
+                  <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+                <span class="ql-format-separator"></span>
+                <select title="Background Color" class="ql-background" defaultValue="rgb(255, 255, 255)">
+                  <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                  ...
+                  <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+            </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered"></button>
+                  <button class="ql-list" value="bullet"></button>
+                <select title="Text Alignment" class="ql-align" >
+                  <option selected>Gauche</option>
+                  <option value="center" label="Center"></option>
+                  <option value="right" label="Right"></option>
+                  <option value="justify" label="Justify"></option>
+                </select>
+              </span>
+                <span class="ql-formats">
+                <button aria-label="Link" class="ql-link"></button>
+              </span>
+              </p-header>
+            </p-editor>
+          </div>
+
+        </div>
+      </ng-template>
+
+      <p-footer>
+        <button (click)="createTask()" pButton pRipple type="button" label="Envoyer" class="p-button-raised p-button-info"></button>
+      </p-footer>
+  </p-dialog>
 
 
   <p-tabView (onChange)="handleChange($event)" [(activeIndex)]="index" styleClass="affaireTab">
@@ -79,9 +170,7 @@
               <div>
                 <h5>Rapport initial</h5>
                 <hr>
-                <p style="font-size: 0.9rem">
-                  {{affaire?.resume}}
-                </p>
+                <div [innerHTML]="affaire?.resume"></div>
               </div>
 
 
@@ -232,7 +321,7 @@
         [(visible)]="personneDialog">
 
         <div>
-          <p-steps [model]="personneSteps" [readonly]="true"></p-steps>
+          <p-steps (activeIndexChange)="stepCompleted(index)" [model]="personneSteps" [readonly]="true"></p-steps>
         </div>
         <router-outlet></router-outlet>
 
@@ -245,16 +334,15 @@
             <h5>Entites</h5>
             <hr>
 
-            <p-splitButton label="Ajouter" icon="pi pi-plus"
-                           [model]="entiteButtonItems"
+            <button style="margin-bottom: 1rem" (click)="showPersonneDialog()" pButton label="Ajouter" icon="pi pi-plus"
                            styleClass="p-button-info p-mb-2">
-            </p-splitButton>
+            </button>
             <p-table
               [value]="entites"
               [(contextMenuSelection)]="entite"
-              class="p-text-center"
               [scrollable]="true" scrollHeight="100%"
               [resizableColumns]="true"
+              (onRowUnselect)="onRowUnselect()"
               selectionMode="single" dataKey="id"
               styleClass="p-datatable-sm p-datatable-gridlines ">
               <ng-template pTemplate="colgroup">
@@ -274,25 +362,156 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-entite>
-                <tr [pSelectableRow]="entite" >
-                  <td style="text-align: center!important;">
-                    <i class="pi pi-user"></i>
+                <tr (dblclick)="onEntiteRowDblClick(entite)" [pSelectableRowDblClick]="entite" [pSelectableRow]="entite" >
+                  <td>
+                    <i *ngIf="entite.cat === 1" class="fa fa-user"></i>
+                    <i *ngIf="entite.cat === 2" class="fa fa-car"></i>
+                    <i *ngIf="entite.cat === 3" class="fa fa-home"></i>
                   </td>
                   <td>
-                    {{entite.description1}}
+                    {{entite.description}}
                   </td>
                   <td>
                     {{entite.description2}}
                   </td>
-                  <td class="p-text-center">
+                  <td>
                     {{entite.role}}
                   </td>
                 </tr>
               </ng-template>
             </p-table>
           </div>
-
         </div>
+        <p-divider layout="vertical"></p-divider>
+        <div class="p-col-6">
+          <p-fieldset *ngIf="showEntite" legend="Details" [style]="{height: '100%'}">
+            <div>
+              <p-scrollPanel [style]="{height: '500px'}" >
+                <div style="margin-bottom: 2em">
+                  <div>
+                    <h4 *ngIf="entite.cat === 1">Personne</h4>
+                    <h4 *ngIf="entite.cat === 2">Vehicule</h4>
+                    <h4 *ngIf="entite.cat === 3">Organisation</h4>
+                    <hr>
+                    <table class="task" style="border: none;font-size: 0.9rem !important;">
+                      <tr *ngIf="entite.cat === 2 || entite.cat === 3 ">
+                        <td style="width: 66%">Desciption: </td>
+                        <td class="p-text-uppercase">{{entite.description}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 2 || entite.cat === 3 ">
+                        <td style="width: 66%">Description 2 : </td>
+                        <td class="p-text-uppercase">{{entite.description2}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 2">
+                        <td style="width: 45%">Immatriculation: </td>
+                        <td class="p-text-uppercase">{{entite.immatriculation}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 2">
+                        <td style="width: 45%">Categorie: </td>
+                        <td>{{entite.categorie}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 1">
+                        <td style="width: 45%">Nom: </td>
+                        <td class="p-text-uppercase">{{entite.nom}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 1">
+                        <td style="width: 45%">Prenom: </td>
+                        <td class="p-text-uppercase">{{entite.prenom}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 1">
+                        <td>Numero de passport: </td>
+                        <td>{{entite.numPassport}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 1">
+                        <td>Numero de carte: </td>
+                        <td>{{entite.numCarte}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 1">
+                        <td>Pays d'origine: </td>
+                        <td class="p-text-bold">{{entite.lieuNaissance}}</td>
+                      </tr>
+                      <tr>
+                        <td>Role: </td>
+                        <td>{{entite.role}}</td>
+                      </tr>
+                      <tr *ngIf="entite.cat === 1">
+                        <td>Alias: </td>
+                        <td>
+                          <span *ngFor="let items of entite.aliases; let i=index">{{items.alias}}; &nbsp;</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Crée le: </td>
+                        <td>{{entite.createdAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div>
+                    <h5>Rapport initial</h5>
+                    <hr>
+                    <div [innerHTML]="entite.resume"></div>
+                  </div>
+                  <div>
+                    <h4>Galerie</h4>
+                    <hr>
+                    <p-galleria [(value)]="entite.attachements" [(visible)]="displayCustom" [(activeIndex)]="activeIndex" [responsiveOptions]="responsiveOptions" [containerStyle]="{'max-width': '850px'}" [numVisible]="7"
+                                [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="false" [baseZIndex]="100000">
+                      <ng-template pTemplate="item" let-item>
+                        <img *ngIf="item.type === 1" [src]="constService.SERVER_SRC_ADDRESS+'/'+item.name" style="width: 100%; display: block;"/>
+                      </ng-template>
+                      <ng-template pTemplate="thumbnail" let-item>
+                        <div class="p-grid p-nogutter p-justify-center">
+                          <img [src]="constService.SERVER_SRC_ADDRESS+'/'+item.name" style="display: block;"/>
+                        </div>
+                      </ng-template>
+                    </p-galleria>
+                    <div *ngIf="entite.attachements" class="p-grid" style="max-width: 400px;">
+                      <div style="margin-left: 1rem" *ngFor="let image of entite.attachements; let index = index;" class="p-col-3" key="index">
+                        <img width="100" height="100" *ngIf="image.type === 1" [src]="constService.SERVER_SRC_ADDRESS+'/'+image.name" [alt]="image.description" style="cursor: pointer" (click)="imageClick(index)"/>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4>Fichiers joints</h4>
+                    <hr>
+                    <div class="p-grid">
+                      <div [ngClass]="{'p-col-4':doc.type === 3}" class="" *ngFor="let doc of entite.attachements; let index = index;">
+                        <button  icon="pi pi-file" *ngIf="doc.type === 3"
+                                 (click)="showDocumentDialog(doc.name)"
+                                 label="{{doc.name}}" pButton pRipple
+                                 type="button" class="p-button-secondary">
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </p-scrollPanel>
+            </div>
+          </p-fieldset>
+        </div>
+
+        <!-- Pdf viewer dialog -->
+
+        <p-dialog
+          header="Visionneuse de document" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
+          [draggable]="true" [resizable]="true"
+          [(visible)]="displayPdfViewer">
+
+
+          <ngx-extended-pdf-viewer
+            *ngIf="isPdfVisible"
+            [base64Src]="documentSource"
+            backgroundColor="#ffffff"
+            [height]="'90vh'"
+            [useBrowserLocale]="true"
+            [handTool]="false"
+            [showHandToolButton]="true"
+          >
+          </ngx-extended-pdf-viewer>
+
+        </p-dialog>
+
       </div>
 
     </p-tabPanel>
