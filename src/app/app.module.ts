@@ -56,6 +56,7 @@ import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {NgxDocViewerModule} from "ngx-doc-viewer";
 import {RadioButtonModule} from "primeng/radiobutton";
+import {OverlayPanelModule} from "primeng/overlaypanel";
 
 @NgModule({
   declarations: [
@@ -120,7 +121,8 @@ import {RadioButtonModule} from "primeng/radiobutton";
     NgxExtendedPdfViewerModule,
     InputTextareaModule,
     NgxDocViewerModule,
-    RadioButtonModule
+    RadioButtonModule,
+    OverlayPanelModule
 
   ],
   providers: [

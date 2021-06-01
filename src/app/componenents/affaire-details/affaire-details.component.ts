@@ -93,6 +93,8 @@ export class AffaireDetailsComponent implements OnInit {
     resume: "<b>Demande d'autorisation</b><div>Demande de consultation de ce dossier</div><div><br></div>"
   };
 
+
+
   submitted: boolean = false;
   minDateValue = new Date();
 

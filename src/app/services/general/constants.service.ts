@@ -22,6 +22,7 @@ export class ConstantsService {
   public REMOVE_AFFAIRE_UTILISATEUR = "/api/affaire_utilisateurs/";
   public GET_AFFAIRE_ENTITES = "/api/affaire-entites/get/";
   public UPLOAD_FILES_URL = "/api/personne-file/upload";
+  public CREATE_CONSULTATION = "/api/can_consults"
 
 
   public CREATE_PERSONNE = "/api/personnes";

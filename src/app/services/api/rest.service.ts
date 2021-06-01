@@ -192,6 +192,29 @@ export class RestService {
   }
 
 
+  createConsult(consult:any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.CREATE_CONSULTATION,
+      consult
+      , httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
   getUserDepartementUSers(): Observable<any> {
 
     this.token_data = localStorage.getItem('token-data')

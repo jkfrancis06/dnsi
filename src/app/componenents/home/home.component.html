@@ -230,7 +230,7 @@
             </div>
           </p-scrollPanel>
           <div>
-            <button [ngClass]="{'hideButton': (current_timestamp != null && task?.expiresAtTimeStamp! < current_timestamp) || selected_tache_utilisateur_objet.statut !== '0'}" pButton (click)="updateTask(task?.id,1)" icon="pi pi-check" [loading]="confirmIsLoading" type="button" label="Accepter" class="p-button-success p-mr-2 p-mb-2"></button>
+            <button [ngClass]="{'hideButton': (current_timestamp != null && task?.expiresAtTimeStamp! < current_timestamp) || selected_tache_utilisateur_objet.statut !== '0'}" pButton (click)="op.toggle($event)" icon="pi pi-check" [loading]="confirmIsLoading" type="button" label="Accepter" class="p-button-success p-mr-2 p-mb-2"></button>
             <button [ngClass]="{'hideButton': (current_timestamp != null && task?.expiresAtTimeStamp! < current_timestamp) || selected_tache_utilisateur_objet.statut !== '0'}"  pButton (click)="updateTask(task?.id,0)" icon="pi pi-times" [loading]="rejectIsLoading" type="button" label="Rejeter" class="p-button-secondary p-mb-2"></button>
           </div>
         </div>
@@ -238,4 +238,17 @@
     </div>
 
   </div>
+  <p-overlayPanel #formDiv  [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" [dismissable]="false" [showCloseIcon]="true" #op>
+    <ng-template pTemplate>
+      <div class="p-fluid p-formgrid p-grid" >
+        <div class="p-field p-col-12">
+          <label for="expireAt">Date d'expiration de l'autorisation:</label>
+          <p-calendar dateFormat="dd-mm-yy" [showIcon]="true" #expireAt="ngModel" id="expireAt" [showTime]="true" [appendTo]="formDiv" [(ngModel)]="canConsult.expireAt" [minDate]="minDateValue"></p-calendar>
+        </div>
+        <div class="p-col-12">
+          <button (click)="op.hide();updateTask(task?.id,1)"  pButton pRipple type="button" label="Valider" class="p-button-info"></button>
+        </div>
+      </div>
+    </ng-template>
+  </p-overlayPanel>
 </div>

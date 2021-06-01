@@ -77,6 +77,15 @@ export class HomeComponent implements OnInit {
 
   items: MenuItem[] = [];
 
+  canConsult : any = {
+    expireAt: new Date(new Date().getTime()+(5*24*60*60*1000)),
+    isRevoked: false
+  }
+  minDateValue : any = new Date();
+
+  taskId: number = 0;
+
+
 
 
 
@@ -202,7 +211,19 @@ export class HomeComponent implements OnInit {
     if (type === 0){  // reject
       this.updateTaskRequest(index,'Rejeté')
     }else {  // accept
-      this.updateTaskRequest(index,'Accepté')
+      console.log(this.taches[index])
+      this.canConsult.affaire = "/api/affaires/"+this.task?.affaire?.id
+      this.canConsult.utilisateur = "/api/utilisateurs/"+this.task?.createdBy?.id
+      console.log(this.canConsult)
+      this.apiService.createConsult(this.canConsult).subscribe(
+        response => {
+          this.updateTaskRequest(index,'Accepté')
+        },
+        error => {
+            this.handleError(error)
+        }
+      )
+      //this.updateTaskRequest(index,'Accepté')
     }
   }
 
@@ -211,6 +232,7 @@ export class HomeComponent implements OnInit {
     this.taches[index]['statut'] = statut
     this.apiService.updateTacheUtilisateur(this.selected_tache_utilisateur,this.taches[index]).subscribe(
       response => {
+        this.taches_loading = false  // dismiss loader
         this.taches[index] = response  // update tacheutilisateur in component
         if (this.task?.tacheUtilisateurs != null){
           for (var i = 0; i< this.task?.tacheUtilisateurs?.length; i++){  // update tacheutilisateur in details
@@ -232,9 +254,15 @@ export class HomeComponent implements OnInit {
     );
   }
 
+
   handleError(error: any){
+    this.taches_loading = false  // dismiss loader
+    if (error.status === 403){
+      console.log('ok')
+      this.messageService.add({severity:'error', summary:'Error', detail:"Vous n'avez pas les autorisations neccessaires pour effectuer cette action." +
+          " Veuillez demander l'acces au proprietaire de la ressource"});
+    }
     if (typeof (error.error.message) === 'undefined'){
-      this.taches_loading = false  // dismiss loader
       this.showViaService(1)  // if server error
     }else {
       if (error.error.message.type === 1){
@@ -243,6 +271,5 @@ export class HomeComponent implements OnInit {
       }
     }
   }
-
 
 }
