@@ -119,6 +119,8 @@ export class RestService {
   }
 
 
+
+
   getDepartementAffaires(): Observable<any> {
 
     this.token_data = localStorage.getItem('token-data')
@@ -139,13 +141,71 @@ export class RestService {
        user = JSON.parse(token_user)
     }
 
-    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_DEPARTEMENT_AFFAIRES+user.id
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_AFFAIRE+'?departement.id='+user.departement
       , httpOptions)
       .pipe(
         catchError(this.handleError)
       );
 
   }
+
+  getAffaireEnvenements(affaireId:any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    let token_user = localStorage.getItem('user');
+    let user:any;
+    if (token_user != null) {
+      user = JSON.parse(token_user)
+    }
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.ENVENEMENTS+'?affaire.id='+ affaireId
+      , httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  getConsultations(): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    let token_user = localStorage.getItem('user');
+    let user:any;
+    if (token_user != null) {
+      user = JSON.parse(token_user)
+    }
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.CAN_CONSULT+'?utilisateur.id='+user.id
+      , httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
 
   updateTacheUtilisateur(id:number, data:any): Observable<any> {
 
@@ -301,7 +361,7 @@ export class RestService {
       })
     };
 
-    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_AFFAIRE_ENTITES + id
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.GET_ENTITES + "affaire.id="+id
       ,httpOptions)
       .pipe(
         catchError(this.handleError)
@@ -336,6 +396,9 @@ export class RestService {
       );
 
   }
+
+
+
 
 
   getMatchingNomPrenom(nom: string, prenom: string): Observable<any> {

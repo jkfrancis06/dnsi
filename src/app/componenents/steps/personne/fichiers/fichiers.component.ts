@@ -44,11 +44,9 @@ export class FichiersComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // @ts-ignore
-    this.activatedroute.parent.url.subscribe((urlPath) => {
-      const url = urlPath[urlPath.length - 1].path;
-      console.log(url)
-      this.id = parseInt(url)
+    this.activatedroute?.parent?.params.subscribe((params) => {
+      console.log('params', params);
+      this.id = params.id
     })
 
 
@@ -207,7 +205,7 @@ export class FichiersComponent implements OnInit {
 
 
   previousPage() {
-    this.router.navigate(["/affaire-details/"+this.id+"/role"]);
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'role'}}]);
   }
 
   nextPage() {
@@ -216,7 +214,7 @@ export class FichiersComponent implements OnInit {
     this.personneService.personneInformation.attachementInformation.images = this.images
     console.log(this.personneService.personneInformation)
     this.personneService.setPersonneInformation(this.personneService.personneInformation)
-    this.router.navigate(["/affaire-details/"+this.id+"/recap"]);
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'recap'}}]);
 
   }
 }

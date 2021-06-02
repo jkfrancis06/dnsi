@@ -9,7 +9,7 @@
 
 <div  style="font-size: small!important;">
 
-
+  <!-- Access denied dialog -->
   <p-dialog [maximizable]="true" [modal]="true" [draggable]="false" [closable]="false" [(visible)]="deniedAccess"  [style]="{width: '50vw'}">
       <ng-template pTemplate="header">
         <i class="pi pi-exclamation-triangle" style="font-size: 3rem"></i><span class="p-text-bold">Access refusé. Veuillez remplir ce formulaire afin de demander l'accès</span>
@@ -179,7 +179,7 @@
                 <hr>
 
                 <div style="width: 100%">
-                  <button [disabled]="affaire != null && affaire.createdBy.id !== user.id"
+                  <button [disabled]="(!isAffaireUtilisateur) || isConsultant"
                     (click)="createAffaireUtilisateur()"
                     style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
                     iconPos="left" label="Ajouter un enqueteur">
@@ -219,7 +219,7 @@
                         <td>{{affaireUser.createdAt | date: 'dd-MM-yyyy H:m:s' }}</td>
                         <td class="p-text-center">
                           <button
-                            [disabled]="affaireUser.utilisateur.id === user.id || affaire.createdBy.id !== user.id"
+                            [disabled]="affaireUser.utilisateur.id === user.id || isConsultant || !isAffaireUtilisateur"
                             (click)="confirm(affaireUser)"
                             pButton class="p-button-danger"
                             icon="pi pi-trash">
@@ -269,11 +269,19 @@
                            [scrollable]="true" scrollHeight="100px"
                            [resizableColumns]="true"
                            [value]="affaire?.canConsults"
-                           selectionMode="single" dataKey="id"
+                           dataKey="id"
                            styleClass="p-datatable-sm p-datatable-gridlines ">
+                    <ng-template pTemplate="colgroup">
+                      <colgroup>
+                        <col style="width:25%">
+                        <col style="width:25%">
+                        <col style="width:25%">
+                        <col style="width:15%">
+                        <col style="width:15%">
+                      </colgroup>
+                    </ng-template>
                     <ng-template pTemplate="header" >
                       <tr>
-                        <th pResizableColumn></th>
                         <th pResizableColumn>Nom</th>
                         <th pResizableColumn>Departement</th>
                         <th pResizableColumn>Date de debut</th>
@@ -282,15 +290,14 @@
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-consultations>
-                      <tr [pSelectableRow]="consultations" >
-                        <td colspan="6" >
-                          Aucun consultant
-                        </td>
-                      </tr>
-                    </ng-template>
-                    <ng-template *ngIf="affaire?.canConsults.lengh == 0"  pTemplate="emptymessage">
                       <tr>
-                        <td colspan="6">There are no order for this product yet.</td>
+                        <td class="p-text-uppercase">{{consultations.utilisateur.nom}} &nbsp; {{consultations.utilisateur.prenom}}</td>
+                        <td class="p-text-uppercase">{{consultations.utilisateur.departement.nom}}</td>
+                        <td>{{consultations.createdAt | date: 'dd-MM-yyyy H:m:s' }}</td>
+                        <td>{{consultations.expireAt | date: 'dd-MM-yyyy H:m:s' }}</td>
+                        <td style="color: green" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '0'">Valide</td>
+                        <td style="color: orange" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '1'">Expiré</td>
+                        <td style="color: red" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '2'">Revoqué</td>
                       </tr>
                     </ng-template>
                   </p-table>
@@ -309,23 +316,25 @@
     </p-tabPanel>
 
 
+    <!-- personne creation dialog -->
+    <p-dialog
+      [style]="{width: '50vw'}" [maximizable]="true"
+      [draggable]="true" [resizable]="true"
+      [modal]="true"
+      header="Creation d'une personne"
+      [(visible)]="personneDialog">
+
+      <div>
+        <p-steps (activeIndexChange)="stepCompleted(index)" [model]="personneSteps"></p-steps>
+      </div>
+      <router-outlet name="entiteRoute"></router-outlet>
+
+    </p-dialog>
     <!---- Header entites -->
 
     <p-tabPanel header="Entités">
 
-      <!-- personne creation dialog -->
-      <p-dialog
-        [style]="{width: '50vw'}" [maximizable]="true"
-        [draggable]="true" [resizable]="true"
-        header="Creation d'une personne"
-        [(visible)]="personneDialog">
 
-        <div>
-          <p-steps (activeIndexChange)="stepCompleted(index)" [model]="personneSteps" [readonly]="true"></p-steps>
-        </div>
-        <router-outlet></router-outlet>
-
-      </p-dialog>
 
       <div class="p-d-flex">
         <div class="p-col-6">
@@ -334,7 +343,7 @@
             <h5>Entites</h5>
             <hr>
 
-            <button style="margin-bottom: 1rem" (click)="showPersonneDialog()" pButton label="Ajouter" icon="pi pi-plus"
+            <button [disabled]="isConsultant || !isAffaireUtilisateur" style="margin-bottom: 1rem" (click)="showPersonneDialog()" pButton label="Ajouter" icon="pi pi-plus"
                            styleClass="p-button-info p-mb-2">
             </button>
             <p-table
@@ -515,8 +524,42 @@
       </div>
 
     </p-tabPanel>
+
+
+    <!-- event creation dialog -->
+    <p-dialog
+      (onHide)="close()"
+      [style]="{width: '50vw'}" [maximizable]="true"
+      [draggable]="true" [resizable]="true"
+      [modal]="true"
+      header="Creation d'un evenement"
+      [(visible)]="eventDialog">
+
+      <div>
+        <p-steps (activeIndexChange)="stepCompleted(index)" [model]="eventSteps" [readonly]="true"></p-steps>
+      </div>
+      <router-outlet name="eventRoute"></router-outlet>
+
+    </p-dialog>
+
     <p-tabPanel header="Evenements">
-      Content 3
+
+      <p-dialog header="Creation d'un evenement" [(visible)]="displayEventCreateViewer">
+      </p-dialog>
+
+      <div class="p-grid" style="margin-top: 2em">
+        <div class="p-col-6">
+          <p-fieldset>
+            <ng-template pTemplate="header">Evènements</ng-template>
+            <button icon="pi pi-plus" (click)="createEnvenement()" pButton pRipple type="button" label="Créer un evenement" class="p-button-info"></button>
+          </p-fieldset>
+        </div>
+        <p-divider layout="vertical"></p-divider>
+        <div class="p-col-6">
+
+        </div>
+      </div>
+
     </p-tabPanel>
     <p-tabPanel header="Pieces a convictions">
       Content 3

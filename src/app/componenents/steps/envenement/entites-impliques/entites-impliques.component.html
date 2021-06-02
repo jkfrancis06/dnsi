@@ -1,0 +1,25 @@
+
+<div #formDiv class="p-fluid p-formgrid p-grid" style="margin-top: 2em">
+  <div class="p-field p-col-12 p-md-12">
+    <p-listbox [options]="entites" [(ngModel)]="envenementService.envenementInformation.entitesInfo" [metaKeySelection]="false"
+               [checkbox]="true" [multiple]="true"
+               [listStyle]="{'max-height':'250px'}" [style]="{'width':'25rem'}">
+    <ng-template let-entites pTemplate="item">
+      <div class="country-item">
+        <div class="p-text-uppercase">{{entites.description}} {{entites.description2}}</div>
+      </div>
+    </ng-template>
+    </p-listbox>
+    <small *ngIf="entiteInvalid" class="p-error">Au moins une entite doit être selectionne</small>
+  </div>
+</div>
+
+<div class="p-d-flex p-jc-between">
+  <div>
+    <p-button label="Precedent" (onClick)="previousPage()"   icon="pi pi-angle-left" iconPos="left"></p-button>
+  </div>
+  <div>
+    <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+  </div>
+</div>
+

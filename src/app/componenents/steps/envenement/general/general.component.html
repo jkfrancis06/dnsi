@@ -1,0 +1,60 @@
+<div #formDiv class="p-fluid p-formgrid p-grid" style="margin-top: 2em">
+  <div class="p-field p-col-12 p-md-12">
+    <label for="typeEvenement">Type : </label>
+    <p-listbox required [style]="{'width':'15rem'}"
+               #typeEvenement="ngModel" id="typeEvenement"
+               [options]="eventType" [(ngModel)]="envenementService.envenementInformation.generalInfo.typeEvenementObject"
+               [ngClass]="{'ng-dirty': (typeEvenement.invalid && submitted) || (typeEvenement.dirty && typeEvenement.invalid)}"
+               optionLabel="designation"></p-listbox>
+    <small *ngIf="typeInvalid" class="p-error">Le type est obligatoire</small>
+  </div>
+
+  <div class="p-field p-col-6 p-md-6">
+    <label for="localisation">Localisation: </label>
+    <input id="localisation"
+           required
+           #localisation="ngModel" [(ngModel)]="envenementService.envenementInformation.generalInfo.localisation"
+           [ngClass]="{'ng-dirty': (localisation.invalid && submitted) || (localisation.dirty && localisation.invalid)}"
+           type="text" pInputText>
+    <small *ngIf="(localisation.invalid && submitted) || (localisation.dirty && localisation.invalid)" class="p-error">La localisation est obligatoire</small>
+  </div>
+  <div class="p-field p-col-6 p-md-6">
+    <label for="geoLocalisation">Coordonnées GPS: </label>
+    <input id="geoLocalisation"
+           #geoLocalisation="ngModel"
+           [(ngModel)]="envenementService.envenementInformation.generalInfo.geoLocalisation"
+           type="text" pInputText>
+  </div>
+  <div class="p-field p-col-6">
+    <label for="startAt">Debut: </label>
+    <p-calendar dateFormat="dd-mm-yy"
+                [required]="true"
+                [showIcon]="true" #startAt="ngModel"
+                id="expireAt" [showTime]="true"
+                [appendTo]="formDiv"
+                [(ngModel)]="envenementService.envenementInformation.generalInfo.startAt"
+                [ngClass]="{'ng-dirty': (startAt.invalid && submitted) || (startAt.dirty && startAt.invalid)}"
+                [maxDate]="maxStartAtDateValue"></p-calendar>
+    <small *ngIf="(startAt.invalid && submitted) || (startAt.dirty && startAt.invalid)" class="p-error">La date de debut est obligatoire</small>
+
+  </div>
+
+  <div class="p-field p-col-6">
+    <label for="endAt">Fin: </label>
+    <p-calendar dateFormat="dd-mm-yy"
+                [required]="true"
+                [showIcon]="true" #startAt="ngModel"
+                id="expireAt" [showTime]="true"
+                [appendTo]="formDiv"
+                [(ngModel)]="envenementService.envenementInformation.generalInfo.endAt"
+                [minDate]="envenementService.envenementInformation.generalInfo.startAt"></p-calendar>
+  </div>
+</div>
+<div class="p-d-flex p-jc-between">
+  <div>
+    <p-button label="Precedent" [disabled]="true" icon="pi pi-angle-left" iconPos="left"></p-button>
+  </div>
+  <div>
+    <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+  </div>
+</div>

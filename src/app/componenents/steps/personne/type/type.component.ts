@@ -26,12 +26,12 @@ export class TypeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // @ts-ignore
-    this.activatedroute.parent.url.subscribe((urlPath) => {
-      const url = urlPath[urlPath.length - 1].path;
-      console.log(url)
-      this.id = parseInt(url)
+
+    this.activatedroute?.parent?.params.subscribe((params) => {
+      console.log('params', params);
+      this.id = params.id
     })
+
 
     this.typeInformation = this.personneService.personneInformation.type
 
@@ -45,13 +45,9 @@ export class TypeComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.typeInformation != ""){
-      this.typeInvalid = false
-      this.personneService.personneInformation.type = this.typeInformation.value
-      this.router.navigate(["/affaire-details/"+this.id+"/general-info"]);
-    }else {
-      this.typeInvalid = true
-    }
+    console.log(this.typeInformation)
+    this.typeInvalid = false
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'general-info'}}]);
 
   }
 }

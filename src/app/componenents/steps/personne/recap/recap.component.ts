@@ -33,11 +33,9 @@ export class RecapComponent implements OnInit {
   ngOnInit(): void {
     this.personneInfo = this.personneService.personneInformation
 
-    // @ts-ignore
-    this.activatedroute.parent.url.subscribe((urlPath) => {
-      const url = urlPath[urlPath.length - 1].path;
-      console.log(url)
-      this.id = parseInt(url)
+    this.activatedroute?.parent?.params.subscribe((params) => {
+      console.log('params', params);
+      this.id = params.id
     })
 
     // search matching nom prenom
@@ -185,7 +183,7 @@ export class RecapComponent implements OnInit {
   }
 
   previousPage() {
-    this.router.navigate(["/affaire-details/"+this.id+"/fichiers"]);
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'fichiers'}}]);
   }
 
   nextPage() {
@@ -203,7 +201,7 @@ export class RecapComponent implements OnInit {
 
 
     let personne = {
-      cat: this.personneService.personneInformation.type,
+      cat: this.personneService.personneInformation.type.value,
       nom: this.personneService.personneInformation.informationsGenerales.nom,
       prenom: this.personneService.personneInformation.informationsGenerales.prenom,
       dateNaissance: this.personneService.personneInformation.informationsGenerales.dateNaissance,
@@ -221,7 +219,7 @@ export class RecapComponent implements OnInit {
       aliases: aliases,
       attachements: [] as any[],
       mainPicture: "icon-default.png",
-      type: this.personneService.personneInformation.type
+      type: this.personneService.personneInformation.type.value
     }
 
     if (this.personneService.personneInformation.attachementInformation.images.length > 0){

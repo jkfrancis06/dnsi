@@ -11,6 +11,10 @@ import {RoleComponent} from "./componenents/steps/personne/role/role.component";
 import {FichiersComponent} from "./componenents/steps/personne/fichiers/fichiers.component";
 import {RecapComponent} from "./componenents/steps/personne/recap/recap.component";
 import {TypeComponent} from "./componenents/steps/personne/type/type.component";
+import {GeneralComponent} from "./componenents/steps/envenement/general/general.component";
+import {EntitesImpliquesComponent} from "./componenents/steps/envenement/entites-impliques/entites-impliques.component";
+import {UtilisateurImpliquesComponent} from "./componenents/steps/envenement/utilisateur-impliques/utilisateur-impliques.component";
+import {RecapEnvenementComponent} from "./componenents/steps/envenement/recap-envenement/recap-envenement.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
@@ -20,12 +24,16 @@ const routes: Routes = [
 
   // personne steps routing
   { path: 'affaire-details/:id', component: AffaireDetailsComponent, canActivate: [AuthGuard], children: [
-      {path: '', redirectTo: 'type', pathMatch: 'full'},
-      {path: 'general-info', component: InformationsGeneralesComponent},
-      {path: 'role', component: RoleComponent},
-      {path: 'fichiers', component: FichiersComponent},
-      {path: 'recap', component: RecapComponent},
-      {path: 'type', component: TypeComponent},
+      { path: '', component: AffaireDetailsComponent},
+      {path: 'general-info', component: InformationsGeneralesComponent,outlet: 'entiteRoute'},
+      {path: 'role', component: RoleComponent, outlet: 'entiteRoute'},
+      {path: 'fichiers', component: FichiersComponent, outlet: 'entiteRoute'},
+      {path: 'recap', component: RecapComponent, outlet: 'entiteRoute'},
+      {path: 'type', component: TypeComponent, outlet: 'entiteRoute'},
+      {path: 'envenement', component: GeneralComponent, outlet: 'eventRoute'},
+      {path: 'entitesImpliques', component: EntitesImpliquesComponent, outlet: 'eventRoute'},
+      {path: 'utilisateurImpliques', component: UtilisateurImpliquesComponent, outlet: 'eventRoute'},
+      {path: 'recapEnvenement', component: RecapEnvenementComponent, outlet: 'eventRoute'},
     ]},
 
 

@@ -9,7 +9,10 @@ export class PersonneService {
 
 
   personneInformation = {
-    type: 1,
+    type: {
+      designation: "Personne",
+      value: 1
+    },
     informationsGenerales: {
       nom: "",
       prenom: "",
@@ -45,7 +48,9 @@ export class PersonneService {
 
   resetData(){
     this.personneInformation = {
-      type: 1,
+      type: {
+        designation: "Personne", value: 1
+      },
       informationsGenerales: {
         nom: "",
         prenom: "",

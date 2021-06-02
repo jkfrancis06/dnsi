@@ -30,11 +30,9 @@ export class RoleComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // @ts-ignore
-    this.activatedroute.parent.url.subscribe((urlPath) => {
-      const url = urlPath[urlPath.length - 1].path;
-      console.log(url)
-      this.id = parseInt(url)
+    this.activatedroute?.parent?.params.subscribe((params) => {
+      console.log('params', params);
+      this.id = params.id
     })
 
     this.roleInformation = this.personneService.personneInformation.roleInformation
@@ -47,7 +45,7 @@ export class RoleComponent implements OnInit {
   }
 
   previousPage() {
-    this.router.navigate(["/affaire-details/"+this.id+"/general-info"]);
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'general-info'}}]);
   }
 
   nextPage() {
@@ -58,7 +56,7 @@ export class RoleComponent implements OnInit {
     console.log(this.personneService.personneInformation)
 
     if (!this.remarqueInvalid && !this.roleInvalid){
-      this.router.navigate(["/affaire-details/"+this.id+"/fichiers"]);
+      this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'fichiers'}}]);
     }
 
   }

@@ -4,7 +4,7 @@
     <div  class="p-fluid p-formgrid p-grid">
       <div class="p-field p-col-12">
         <label for="type">Type <span style="color:red">*</span>: </label>
-        <p-listbox required #type id="type" name="type" [options]="types" [(ngModel)]="typeInformation" optionLabel="designation" [style]="{'width':'15rem'}"></p-listbox>
+        <p-listbox required #type id="type" name="type" [options]="types" [(ngModel)]="personneService.personneInformation.type" optionLabel="designation" [style]="{'width':'15rem'}"></p-listbox>
         <small *ngIf="typeInvalid" class="p-error">Le type est obligatoire</small>
       </div>
     </div>

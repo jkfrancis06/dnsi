@@ -28,7 +28,7 @@ export class AffaireDetailsComponent implements OnInit {
 
   index: number = 0;  // tab nav index
 
-  id?: string | null = '0';
+  id?: any ;
 
   affaire: any;
   affaireLoading = true;
@@ -99,6 +99,11 @@ export class AffaireDetailsComponent implements OnInit {
   minDateValue = new Date();
 
   affaireUtilisateurs: any[] = []
+  isConsultant: boolean = false;
+  isAffaireUtilisateur: boolean = false;
+  displayEventCreateViewer: boolean = false;
+  eventDialog: boolean = false;
+  eventSteps: MenuItem[] = [];
 
 
   constructor(
@@ -123,15 +128,24 @@ export class AffaireDetailsComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.activatedroute.paramMap.subscribe(params => {
-      if (params.get('id') != null){
-        this.id = params.get('id');
-      }
+    // @ts-ignore
+    this.activatedroute.firstChild.params.subscribe(params => {
+      this.id = +params['id'];
 
       this.restApi.getAffaire(this.id).subscribe(
         response => {
           console.log(response)
           this.affaire = response
+          for (let i = 0 ; i< response.affaireUtilisateurs.length ; i++){
+            if (response.affaireUtilisateurs[i].utilisateur.id === this.user.id){
+              this.isAffaireUtilisateur = true;
+            }
+          }
+          for (let i = 0; i< response.canConsults.length; i++){
+            if (response.canConsults[i].utilisateur.id === this.user.id){ // is in consultants list
+              this.isConsultant = true;
+            }
+          }
           this.affaireLoading = false
         },
         error => {
@@ -141,27 +155,47 @@ export class AffaireDetailsComponent implements OnInit {
       )
     });
 
+    this.eventSteps = [
+      {
+        label: 'Informations générales',
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'envenement'}}]
+      },
+      {
+        label: 'Entités impliquées',
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'entitesImpliques'}}]
+      },
+      {
+        label: 'Enqueteur impliqués',
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'utilisateurImpliques'}}]
+      },
+      {
+        label: 'Recapitulatif',
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'recapEnvenement'}}]
+      },
+    ];
+
 
     this.personneSteps = [
       {
         label: 'Type',
-        routerLink: '/affaire-details/'+this.id+'/type'
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'type'}}]
+
       },
       {
       label: 'Informations Generales',
-      routerLink: '/affaire-details/'+this.id+'/general-info'
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'general-info'}}]
       },
       {
         label: 'Role',
-        routerLink: '/affaire-details/'+this.id+'/role'
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'role'}}]
       },
       {
         label: 'Fichiers joints',
-        routerLink:  '/affaire-details/'+this.id+'/fichiers'
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'fichiers'}}]
       },
       {
         label: 'Recaptitulatif',
-        routerLink:  '/affaire-details/'+this.id+'/recap'
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'recap'}}]
       }
     ];
 
@@ -213,6 +247,17 @@ export class AffaireDetailsComponent implements OnInit {
           console.log(error)
         }
       )
+    }
+
+    if (this.index === 2) { // envenements tab
+        this.restApi.getAffaireEnvenements(this.id).subscribe(
+          response => {
+            console.log(response)
+          },
+          error => {
+              this.handleError(error)
+          }
+        )
     }
   }
 
@@ -335,6 +380,7 @@ export class AffaireDetailsComponent implements OnInit {
   }
 
   showPersonneDialog() {
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'type'}}]);
     this.personneDialog = true
   }
 
@@ -396,5 +442,14 @@ export class AffaireDetailsComponent implements OnInit {
   }
 
   toCallAfterTimeOut(){
+  }
+
+  createEnvenement() {
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'envenement'}}]);
+    this.eventDialog = true
+  }
+
+  close() {
+    console.log('ok')
   }
 }

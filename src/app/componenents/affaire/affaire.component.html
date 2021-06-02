@@ -122,56 +122,156 @@
     </p-dialog>
 
     <div class="p-col-6">
-      <p-fieldset legend="Mes affaires">
+      <p-scrollPanel [style]="{height: '600px'}"  >
+        <p-fieldset legend="Mes affaires">
 
-        <div [hidden]="affairesLoading == false" class="p-field p-col-12 p-md-6">
-          <p-skeleton styleClass="p-mb-2"></p-skeleton>
-          <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
-          <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
-          <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
-          <p-skeleton width="10rem" height="4rem"></p-skeleton>
+          <div [hidden]="affairesLoading == false" class="p-field p-col-12 p-md-6">
+            <p-skeleton styleClass="p-mb-2"></p-skeleton>
+            <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+            <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+            <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+            <p-skeleton width="10rem" height="4rem"></p-skeleton>
+          </div>
+
+          <button
+            (click)="displayAffaireDialog()"
+            style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
+            iconPos="left" label="Nouvelle affaire">
+          </button>
+
+
+          <p-table
+            [scrollable]="true" scrollHeight="200px"
+            [resizableColumns]="true"
+            [value]="userAffaires"
+            (onRowUnselect)="onRowUnselect()"
+            selectionMode="single" [(selection)]="affaire" dataKey="id"
+            styleClass="p-datatable-sm p-datatable-gridlines ">
+            <ng-template pTemplate="colgroup">
+              <colgroup>
+                <col style="width:5%">
+                <col style="width:50%">
+                <col style="width:35%">
+                <col style="width:15%">
+              </colgroup>
+            </ng-template>
+            <ng-template pTemplate="header" >
+              <tr >
+                <th pResizableColumn></th>
+                <th pResizableColumn>Numero</th>
+                <th pResizableColumn>Nom</th>
+                <th pResizableColumn>Statut</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-affaire>
+              <tr (dblclick)="onAffaireRowDblClick(affaire)" [pSelectableRowDblClick]="affaire">
+                <td style="font-weight: bold"><i class="pi pi-folder-open"></i></td>
+                <td>{{affaire.numeroMatricule}}</td>
+                <td>{{affaire.nom}}</td>
+                <td>{{affaire.statut}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-fieldset>
+
+
+
+        <div style="margin-top: 2em">
+          <p-fieldset legend="Toutes les affaire du departement">
+
+            <div [hidden]="depAffairesLoading == false" class="p-field p-col-12 p-md-6">
+              <p-skeleton styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton width="10rem" height="4rem"></p-skeleton>
+            </div>
+
+
+            <p-table
+              [scrollable]="true" scrollHeight="200px"
+              [resizableColumns]="true"
+              [value]="departementAffaires"
+              (onRowUnselect)="onRowUnselect()"
+              selectionMode="single" [(selection)]="affaire" dataKey="id"
+              styleClass="p-datatable-sm p-datatable-gridlines ">
+              <ng-template pTemplate="colgroup">
+                <colgroup>
+                  <col style="width:5%">
+                  <col style="width:50%">
+                  <col style="width:35%">
+                  <col style="width:15%">
+                </colgroup>
+              </ng-template>
+              <ng-template pTemplate="header" >
+                <tr >
+                  <th pResizableColumn></th>
+                  <th pResizableColumn>Numero</th>
+                  <th pResizableColumn>Nom</th>
+                  <th pResizableColumn>Statut</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-affaire>
+                <tr (dblclick)="onAffaireRowDblClick(affaire)" [pSelectableRowDblClick]="affaire">
+                  <td style="font-weight: bold"><i class="pi pi-folder-open"></i></td>
+                  <td>{{affaire.numeroMatricule}}</td>
+                  <td>{{affaire.nom}}</td>
+                  <td>{{affaire.statut}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-fieldset>
         </div>
 
-        <button
-          (click)="displayAffaireDialog()"
-          style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
-          iconPos="left" label="Nouvelle affaire">
-        </button>
 
 
-        <p-table
-         [scrollable]="true" scrollHeight="200px"
-          [resizableColumns]="true"
-          [value]="userAffaires"
-          (onRowUnselect)="onRowUnselect()"
-          selectionMode="single" [(selection)]="affaire" dataKey="id"
-          styleClass="p-datatable-sm p-datatable-gridlines ">
-          <ng-template pTemplate="colgroup">
-            <colgroup>
-              <col style="width:5%">
-              <col style="width:50%">
-              <col style="width:35%">
-              <col style="width:15%">
-            </colgroup>
-          </ng-template>
-          <ng-template pTemplate="header" >
-            <tr >
-              <th pResizableColumn></th>
-              <th pResizableColumn>Numero</th>
-              <th pResizableColumn>Nom</th>
-              <th pResizableColumn>Statut</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-affaire>
-            <tr (dblclick)="onAffaireRowDblClick(affaire)" [pSelectableRowDblClick]="affaire">
-              <td style="font-weight: bold"><i class="pi pi-folder-open"></i></td>
-              <td>{{affaire.numeroMatricule}}</td>
-              <td>{{affaire.nom}}</td>
-              <td>{{affaire.statut}}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-fieldset>
+        <div style="margin-top: 2em">
+          <p-fieldset legend="Consultations">
+
+            <div [hidden]="depAffairesLoading == false" class="p-field p-col-12 p-md-6">
+              <p-skeleton styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton width="10rem" styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton width="5rem" styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton height="2rem" styleClass="p-mb-2"></p-skeleton>
+              <p-skeleton width="10rem" height="4rem"></p-skeleton>
+            </div>
+
+
+            <p-table
+              [scrollable]="true" scrollHeight="200px"
+              [resizableColumns]="true"
+              [value]="consultAffaires"
+              (onRowUnselect)="onRowUnselect()"
+              selectionMode="single" [(selection)]="affaire" dataKey="id"
+              styleClass="p-datatable-sm p-datatable-gridlines ">
+              <ng-template pTemplate="colgroup">
+                <colgroup>
+                  <col style="width:5%">
+                  <col style="width:50%">
+                  <col style="width:35%">
+                  <col style="width:15%">
+                </colgroup>
+              </ng-template>
+              <ng-template pTemplate="header" >
+                <tr >
+                  <th pResizableColumn></th>
+                  <th pResizableColumn>Numero</th>
+                  <th pResizableColumn>Nom</th>
+                  <th pResizableColumn>Statut</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-affaire>
+                <tr (dblclick)="onAffaireRowDblClick(affaire)" [pSelectableRowDblClick]="affaire">
+                  <td style="font-weight: bold"><i class="pi pi-folder-open"></i></td>
+                  <td>{{affaire.numeroMatricule}}</td>
+                  <td>{{affaire.nom}}</td>
+                  <td>{{affaire.statut}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-fieldset>
+        </div>
+      </p-scrollPanel>
     </div>
 
     <p-divider layout="vertical"></p-divider>
@@ -181,7 +281,7 @@
       <p-fieldset [hidden]="showAffaire == false" legend="Details" [style]="{height: '100%'}">
 
         <div>
-          <p-scrollPanel [style]="{height: '500px'}"  >
+          <p-scrollPanel [style]="{height: '600px'}"  >
 
             <div>
               <h5>Affaire</h5>

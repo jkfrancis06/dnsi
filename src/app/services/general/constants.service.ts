@@ -23,7 +23,9 @@ export class ConstantsService {
   public GET_AFFAIRE_ENTITES = "/api/affaire-entites/get/";
   public UPLOAD_FILES_URL = "/api/personne-file/upload";
   public CREATE_CONSULTATION = "/api/can_consults"
+  public CAN_CONSULT = "/api/can_consults"
 
+  public ENVENEMENTS = "/api/envenements"
 
   public CREATE_PERSONNE = "/api/personnes";
   public CREATE_ORGANISATION = "/api/organisations";

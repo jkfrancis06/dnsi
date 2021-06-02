@@ -45,15 +45,15 @@ export class InformationsGeneralesComponent implements OnInit {
     this.informationsGenerales = this.personneService.getPersonneInformation().informationsGenerales;
 
     console.log(this.personneService.personneInformation.type)
-    // @ts-ignore
-    this.activatedroute.parent.url.subscribe((urlPath) => {
-      const url = urlPath[urlPath.length - 1].path;
-      console.log(url)
-      this.id = parseInt(url)
+
+    this.activatedroute?.parent?.params.subscribe((params) => {
+      console.log('params', params);
+      this.id = params.id
     })
   }
 
   nextPage() {
+    console.log(this.id)
     if (this.informationsGenerales.nom || this.informationsGenerales.prenom || this.informationsGenerales.alias[0] ||
       this.informationsGenerales.description) {
 
@@ -63,7 +63,9 @@ export class InformationsGeneralesComponent implements OnInit {
         this.personneService.personneInformation.informationsGenerales.description = this.informationsGenerales.nom
         this.personneService.personneInformation.informationsGenerales.description2 = this.informationsGenerales.prenom
       }
-      this.router.navigate(["/affaire-details/"+this.id+"/role"]);
+
+      this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'role'}}]);
+
       return;
     }
 
@@ -92,6 +94,6 @@ export class InformationsGeneralesComponent implements OnInit {
   }
 
   previousPage() {
-    this.router.navigate(["/affaire-details/"+this.id+"/type"]);
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{entiteRoute:'type'}}]);
   }
 }

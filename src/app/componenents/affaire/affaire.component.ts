@@ -14,6 +14,8 @@ export class AffaireComponent implements OnInit {
 
 
   userAffaires!:any[];
+  departementAffaires!:any[];
+  consultAffaires :any[] = [];
   affaire?:any;
 
   newAffaire: any = {
@@ -25,6 +27,7 @@ export class AffaireComponent implements OnInit {
   };
 
   affairesLoading = true;
+  depAffairesLoading = true;
   showAffaire = false
 
   items: MenuItem[] = [];
@@ -76,6 +79,30 @@ export class AffaireComponent implements OnInit {
             console.log(error)
         }
       )
+      this.apiService.getDepartementAffaires().subscribe(
+        response => {
+          console.log(response)
+          this.depAffairesLoading = false
+          this.departementAffaires = response
+        },
+        error => {
+          this.handleError(error)
+        }
+      )
+    this.apiService.getConsultations().subscribe(
+      response => {
+        console.log(response)
+        this.depAffairesLoading = false
+        for (let i= 0; i< response.length; i++){
+          this.consultAffaires.push(response[i]['affaire'])
+        }
+
+      },
+      error => {
+        this.handleError(error)
+      }
+    )
+
   }
 
   onAffaireRowDblClick(affaire:any){

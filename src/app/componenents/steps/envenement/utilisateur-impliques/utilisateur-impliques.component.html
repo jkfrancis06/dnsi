@@ -1,0 +1,22 @@
+<div #formDiv class="p-fluid p-formgrid p-grid" style="margin-top: 2em">
+  <div class="p-field p-col-12 p-md-12">
+    <p-listbox [options]="affaireUtilisateurs" [(ngModel)]="envenementService.envenementInformation.utilisateursInfo" [metaKeySelection]="false"
+               [checkbox]="true" [multiple]="true"
+               [listStyle]="{'max-height':'250px'}" [style]="{'width':'25rem'}">
+      <ng-template let-utilisateurs pTemplate="item">
+        <div class="country-item">
+          <div class="p-text-uppercase">{{utilisateurs.nom}} {{utilisateurs.prenom}}</div>
+        </div>
+      </ng-template>
+    </p-listbox>
+  </div>
+</div>
+
+<div class="p-d-flex p-jc-between">
+  <div>
+    <p-button label="Precedent" (onClick)="previousPage()"   icon="pi pi-angle-left" iconPos="left"></p-button>
+  </div>
+  <div>
+    <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+  </div>
+</div>

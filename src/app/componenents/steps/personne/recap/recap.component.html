@@ -7,7 +7,7 @@
         <th pResizableColumn>Correspondances</th>
       </tr>
     </ng-template>
-    <ng-template *ngIf="personneInfo.type === 1 " pTemplate="body" let-rowData>
+    <ng-template *ngIf="personneInfo.type.value === 1 " pTemplate="body" let-rowData>
       <tr>
         <td class="p-text-bold">Nom et prenoms: </td>
         <td class="p-text-uppercase">{{personneInfo.informationsGenerales.nom}} &nbsp; {{personneInfo.informationsGenerales.prenom}}</td>
@@ -88,7 +88,7 @@
     </ng-template>
 
 
-    <ng-template *ngIf="personneInfo.type === 2 " pTemplate="body" let-rowData2>
+    <ng-template *ngIf="personneInfo.type.value === 2 " pTemplate="body" let-rowData2>
       <tr>
         <td class="p-text-bold">Description: </td>
         <td class="p-text-uppercase">{{personneInfo.informationsGenerales.description}}</td>
@@ -143,7 +143,7 @@
     </ng-template>
 
 
-    <ng-template *ngIf="personneInfo.type === 3 " pTemplate="body" let-rowData3>
+    <ng-template *ngIf="personneInfo.type.value === 3 " pTemplate="body" let-rowData3>
       <tr>
         <td class="p-text-bold">Description: </td>
         <td class="p-text-uppercase">{{personneInfo.informationsGenerales.description}}</td>

@@ -57,6 +57,11 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {NgxDocViewerModule} from "ngx-doc-viewer";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {OverlayPanelModule} from "primeng/overlaypanel";
+import { GeneralComponent } from './componenents/steps/envenement/general/general.component';
+import { EntitesImpliquesComponent } from './componenents/steps/envenement/entites-impliques/entites-impliques.component';
+import { UtilisateurImpliquesComponent } from './componenents/steps/envenement/utilisateur-impliques/utilisateur-impliques.component';
+import { RecapEnvenementComponent } from './componenents/steps/envenement/recap-envenement/recap-envenement.component';
+import { RapportInitialComponent } from './componenents/steps/envenement/rapport-initial/rapport-initial.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +76,12 @@ import {OverlayPanelModule} from "primeng/overlaypanel";
     RoleComponent,
     FichiersComponent,
     RecapComponent,
-    TypeComponent
+    TypeComponent,
+    GeneralComponent,
+    EntitesImpliquesComponent,
+    UtilisateurImpliquesComponent,
+    RecapEnvenementComponent,
+    RapportInitialComponent
   ],
   imports: [
     BrowserModule,
