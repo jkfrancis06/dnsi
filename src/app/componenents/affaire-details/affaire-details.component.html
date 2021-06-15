@@ -7,7 +7,230 @@
   </p-progressSpinner>
 </div>
 
-<div  style="font-size: small!important;">
+<p-confirmDialog [autoZIndex]="true" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog key="invitesConfirm" [autoZIndex]="true" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog key="revoqueConfirm" [autoZIndex]="true" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+
+<!--   Add User to affaire Modal -->
+
+<p-dialog header="Ajouter un participant" [(visible)]="addAffaireUtilisateurDisplay"
+          [modal]="true" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
+          [draggable]="true" [resizable]="true">
+
+
+  <p-listbox
+    [options]="depUtilisateurs" [(ngModel)]="selectedDepUtilisateurs"
+    optionLabel="name" optionValue="id" [style]="{'width':'15rem'}"
+    optionDisabled="inactive"
+    [metaKeySelection]="false" [checkbox]="true"
+    [filter]="true"
+    [multiple]="true"
+  >
+    <ng-template let-depu pTemplate="item">
+      {{depu.name}}
+    </ng-template>
+  </p-listbox>
+
+
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="addUsersToAffaire()" label="Ajouter" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
+
+
+<!-- Remove user to affaire dialog -->
+
+<p-dialog #deleteModal header="Retiter un participant" [(visible)]="removeAffaireUtilisateurDisplay" [modal]="true"
+          [style]="{width: '50vw'}" [maximizable]="true"
+          [draggable]="true" [resizable]="true">
+
+  <p-table
+    [value]="affaire?.affaireUtilisateurs"
+    [(contextMenuSelection)]="selectedAffaireUtilisateur"
+    [resizableColumns]="true"
+    selectionMode="single" dataKey="id"
+    styleClass="p-datatable-sm p-datatable-gridlines ">
+    <ng-template pTemplate="colgroup">
+      <colgroup>
+        <col style="width:5%">
+        <col style="width:40%">
+        <col style="width:40%">
+        <col style="width:15%">
+      </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header" >
+      <tr>
+        <th pResizableColumn></th>
+        <th pResizableColumn>Participant</th>
+        <th pResizableColumn>Date d'ajout</th>
+        <th pResizableColumn></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-affaireUser>
+      <tr [pSelectableRow]="affaireUser" >
+        <td style="text-align: center!important;">
+          <i class="pi pi-user"></i>
+        </td>
+        <td style="text-transform: uppercase!important;">
+          {{affaireUser.utilisateur.nom}}  {{affaireUser.utilisateur.prenom}}
+        </td>
+        <td>{{affaireUser.createdAt | date: 'dd-MM-yyyy H:m:s' }}</td>
+        <td class="p-text-center">
+          <button
+            [disabled]="affaireUser.utilisateur.id === user.id || isConsultant || !isAffaireUtilisateur"
+            (click)="confirm(affaireUser)"
+            pButton class="p-button-danger"
+            icon="pi pi-trash">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+</p-dialog>
+
+
+<!-- Manage consultants dialog -->
+
+
+<p-dialog #deleteModal header="Gerer les invités" [(visible)]="removeCanConsultDisplay" [modal]="true"
+          [style]="{width: '50vw'}" [maximizable]="true"
+          [draggable]="true" [resizable]="true">
+  <p-table class="my-center-text"
+           [scrollable]="true" scrollHeight="100px"
+           [resizableColumns]="true"
+           [value]="affaire?.canConsults"
+           dataKey="id"
+           styleClass="p-datatable-sm p-datatable-gridlines ">
+    <ng-template pTemplate="colgroup">
+      <colgroup>
+        <col style="width:25%">
+        <col style="width:25%">
+        <col style="width:25%">
+        <col style="width:15%">
+        <col style="width:15%">
+        <col style="width:20%">
+      </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header" >
+      <tr>
+        <th pResizableColumn>Nom</th>
+        <th pResizableColumn>Departement</th>
+        <th pResizableColumn>Date de debut</th>
+        <th pResizableColumn>Date de fin</th>
+        <th pResizableColumn>Statut</th>
+        <th pResizableColumn></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-consultations let-i="rowIndex">
+      <tr>
+        <td class="p-text-uppercase">{{consultations.utilisateur.nom}} &nbsp; {{consultations.utilisateur.prenom}}</td>
+        <td class="p-text-uppercase">{{consultations.utilisateur.departement.nom}}</td>
+        <td>{{consultations.createdAt | date: 'dd-MM-yyyy H:m:s' }}</td>
+        <td>{{consultations.expireAt | date: 'dd-MM-yyyy H:m:s' }}</td>
+        <td style="color: green" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '0'">Valide</td>
+        <td style="color: orange" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '1'">Expiré</td>
+        <td style="color: red" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '3'">Revoqué</td>
+        <td class="p-text-center">
+          <button
+            *ngIf="consultations.statut === '0'"
+            (click)="confirmInvite(i,consultations.id)"
+            pButton class="p-button-danger"
+            icon="pi pi-trash">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+</p-dialog>
+
+<!-- Manage administrators dialog -->
+
+<p-dialog #adminModal header="Gerer des responsables d'enquêtes"
+          [(visible)]="displayAdminRevoqueModal" [modal]="true"
+          [style]="{width: '50vw'}" [maximizable]="true"
+          [draggable]="true" [resizable]="true">
+
+    <p-table
+      [value]="affaireDirectors"
+      class="p-text-center"
+      [scrollable]="true" scrollHeight="100px"
+      [resizableColumns]="true"
+      selectionMode="single" dataKey="id"
+      styleClass="p-datatable-sm p-datatable-gridlines ">
+      <ng-template pTemplate="colgroup">
+        <colgroup>
+          <col style="width:5%">
+          <col style="width:40%">
+          <col style="width:20%">
+          <col style="width:10%">
+        </colgroup>
+      </ng-template>
+      <ng-template pTemplate="header" >
+        <tr>
+          <th pResizableColumn></th>
+          <th pResizableColumn>Nom & Prenoms</th>
+          <th pResizableColumn>Statut</th>
+          <th pResizableColumn></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-affaireDir let-i="rowIndex">
+        <tr [pSelectableRow]="affaireDir" >
+          <td style="text-align: center!important;">
+            <i class="pi pi-user"></i>
+          </td>
+          <td style="text-transform: uppercase!important;">
+            {{affaireDir.utilisateur.nom}}  {{affaireDir.utilisateur.prenom}}
+          </td>
+          <td *ngIf="affaireDir.isRevoked == true" style="color: red">REVOQUE</td>
+          <td *ngIf="affaireDir.isRevoked == false" style="color: green">ACTIF</td>
+          <td class="p-text-center">
+            <button
+              *ngIf="affaireDir.isRevoked == false"
+              (click)="confirmRevoqueDir(i,affaireDir.id)"
+              pButton class="p-button-danger"
+              icon="pi pi-trash">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+
+</p-dialog>
+
+<!--   Add adminstrator to affaire Modal -->
+
+<p-dialog header="Ajouter un administrateur" [(visible)]="addAdminstratorModal"
+          [modal]="true" [style]="{width: '50vw'}" [maximizable]="true"
+          [draggable]="true" [resizable]="true">
+
+
+  <p-listbox
+    [options]="depUtilisateurs" [(ngModel)]="selectedAdminstrators"
+    optionLabel="name" optionValue="id" [style]="{'width':'15rem'}"
+    optionDisabled="inactive"
+    [metaKeySelection]="false" [checkbox]="true"
+    [filter]="true"
+    [multiple]="true"
+  >
+    <ng-template let-depu pTemplate="item">
+      <span class="p-text-uppercase">{{depu.name}}</span>
+    </ng-template>
+  </p-listbox>
+
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="createDirectors()" label="Ajouter" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
+
+
+
+
+
+<div>
 
   <!-- Access denied dialog -->
   <p-dialog [maximizable]="true" [modal]="true" [draggable]="false" [closable]="false" [(visible)]="deniedAccess"  [style]="{width: '50vw'}">
@@ -107,7 +330,7 @@
 
     <p-tabPanel [hidden]="affaireLoading == true" header="Affaire">
       <div class="p-d-flex">
-        <div class="p-col-6">
+        <div class="p-col-12">
 
           <div [hidden]="affaireLoading == false">
             <div  class="p-field p-col-12 p-md-6">
@@ -126,12 +349,12 @@
             </div>
           </div>
           <div>
-            <p-scrollPanel [style]="{height: '500px'}"  >
+            <p-scrollPanel [style]="{height: '100vh'}"  >
 
               <div>
                 <h5>Affaire</h5>
                 <hr>
-                <table class="task" style="border: none;font-size: 0.9rem !important;">
+                <table class="task" style="border: none;">
                   <tr>
                     <td style="width: 45%">Numero de dossier: </td>
                     <td>{{affaire?.numeroMatricule}}</td>
@@ -179,11 +402,6 @@
                 <hr>
 
                 <div style="width: 100%">
-                  <button [disabled]="(!isAffaireUtilisateur) || isConsultant"
-                    (click)="createAffaireUtilisateur()"
-                    style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
-                    iconPos="left" label="Ajouter un enqueteur">
-                  </button>
                   <p-table
                     [value]="affaire?.affaireUtilisateurs"
                     [(contextMenuSelection)]="selectedAffaireUtilisateur"
@@ -196,16 +414,12 @@
                       <colgroup>
                         <col style="width:5%">
                         <col style="width:40%">
-                        <col style="width:40%">
-                        <col style="width:15%">
                       </colgroup>
                     </ng-template>
                     <ng-template pTemplate="header" >
                       <tr>
                         <th pResizableColumn></th>
                         <th pResizableColumn>Participant</th>
-                        <th pResizableColumn>Date d'ajout</th>
-                        <th pResizableColumn></th>
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-affaireUser>
@@ -216,52 +430,12 @@
                         <td style="text-transform: uppercase!important;">
                           {{affaireUser.utilisateur.nom}}  {{affaireUser.utilisateur.prenom}}
                         </td>
-                        <td>{{affaireUser.createdAt | date: 'dd-MM-yyyy H:m:s' }}</td>
-                        <td class="p-text-center">
-                          <button
-                            [disabled]="affaireUser.utilisateur.id === user.id || isConsultant || !isAffaireUtilisateur"
-                            (click)="confirm(affaireUser)"
-                            pButton class="p-button-danger"
-                            icon="pi pi-trash">
-                          </button>
-                        </td>
                       </tr>
                     </ng-template>
                   </p-table>
                 </div>
-
-
-
-
-                <!--   Add User to affaire Modal -->
-
-                <p-dialog header="Ajouter un participant" [(visible)]="addAffaireUtilisateurDisplay" [modal]="true" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
-                          [draggable]="true" [resizable]="true">
-
-
-                  <p-listbox
-                    [options]="depUtilisateurs" [(ngModel)]="selectedDepUtilisateurs"
-                    optionLabel="name" optionValue="id" [style]="{'width':'15rem'}"
-                    optionDisabled="inactive"
-                    [metaKeySelection]="false" [checkbox]="true"
-                    [filter]="true"
-                    [multiple]="true"
-                  >
-                    <ng-template let-depu pTemplate="item">
-                      {{depu.name}}
-                    </ng-template>
-                  </p-listbox>
-
-
-                  <ng-template pTemplate="footer">
-                    <p-button icon="pi pi-check" (click)="addUsersToAffaire()" label="Ajouter" styleClass="p-button-text"></p-button>
-                  </ng-template>
-                </p-dialog>
-
               </div>
-
-
-              <div>
+              <!-- <div>
                 <h5>Consultants</h5>
                 <hr>
                 <div style="margin-bottom: 1rem;">
@@ -297,12 +471,12 @@
                         <td>{{consultations.expireAt | date: 'dd-MM-yyyy H:m:s' }}</td>
                         <td style="color: green" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '0'">Valide</td>
                         <td style="color: orange" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '1'">Expiré</td>
-                        <td style="color: red" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '2'">Revoqué</td>
+                        <td style="color: red" class="p-text-uppercase p-text-bold" *ngIf="consultations.statut === '3'">Revoqué</td>
                       </tr>
                     </ng-template>
                   </p-table>
                 </div>
-              </div>
+              </div> -->
 
             </p-scrollPanel>
           </div>
@@ -402,7 +576,7 @@
                     <h4 *ngIf="entite.cat === 2">Vehicule</h4>
                     <h4 *ngIf="entite.cat === 3">Organisation</h4>
                     <hr>
-                    <table class="task" style="border: none;font-size: 0.9rem !important;">
+                    <table class="task" style="border: none;">
                       <tr *ngIf="entite.cat === 2 || entite.cat === 3 ">
                         <td style="width: 66%">Desciption: </td>
                         <td class="p-text-uppercase">{{entite.description}}</td>
@@ -485,9 +659,9 @@
                     <h4>Fichiers joints</h4>
                     <hr>
                     <div class="p-grid">
-                      <div [ngClass]="{'p-col-4':doc.type === 3}" class="" *ngFor="let doc of entite.attachements; let index = index;">
-                        <button  icon="pi pi-file" *ngIf="doc.type === 3"
-                                 (click)="showDocumentDialog(doc.name)"
+                      <div style="margin-right: 1em" [ngClass]="{'p-col-4':doc.type != 1}" class="" *ngFor="let doc of entite.attachements; let index = index;">
+                        <button  icon="pi pi-file" *ngIf="doc.type != 1"
+                                 (click)="downloadFile(doc.name)"
                                  label="{{doc.name}}" pButton pRipple
                                  type="button" class="p-button-secondary">
                         </button>
@@ -547,28 +721,143 @@
       <p-dialog header="Creation d'un evenement" [(visible)]="displayEventCreateViewer">
       </p-dialog>
 
-      <div class="p-grid" style="margin-top: 2em">
+      <div class="p-d-flex" style="margin-top: 1em">
         <div class="p-col-6">
           <p-fieldset>
             <ng-template pTemplate="header">Evènements</ng-template>
-            <button icon="pi pi-plus" (click)="createEnvenement()" pButton pRipple type="button" label="Créer un evenement" class="p-button-info"></button>
+            <button [disabled]="isConsultant || !isAffaireUtilisateur" icon="pi pi-plus" (click)="createEnvenement()" pButton pRipple type="button" label="Créer un evenement" class="p-button-info"></button>
+
+            <div style="margin-top: 1rem">
+              <p-table
+                [scrollable]="true" scrollHeight="100%"
+                [resizableColumns]="true"
+                [value]="envenements"
+                selectionMode="single" dataKey="id"
+                styleClass="p-datatable-sm p-datatable-gridlines ">
+                <ng-template pTemplate="colgroup">
+                  <colgroup>
+                    <col style="width:14%">
+                    <col style="width:30%">
+                    <col style="width:35%">
+                    <col style="width:25%">
+                  </colgroup>
+                </ng-template>
+                <ng-template pTemplate="header" >
+                  <tr>
+                    <th pResizableColumn>Type</th>
+                    <th pResizableColumn>Localisation</th>
+                    <th pResizableColumn>Date de debut</th>
+                    <th pResizableColumn>Date de fin</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-envent>
+                  <tr (dblclick)="onEnvenementRowSelect(envent)"
+                      [pSelectableRowDblClick]="envenement"  >
+                    <td>
+                      {{envent.typeEvenement}}
+                    </td>
+                    <td>
+                      {{envent.localisation}}
+                    </td>
+                    <td>
+                      {{envent.startAt | date: 'dd-MM-yyyy H:m:s'}}
+                    </td>
+                    <td>
+                      {{envent.endAt | date: 'dd-MM-yyyy H:m:s'}}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+
           </p-fieldset>
         </div>
         <p-divider layout="vertical"></p-divider>
         <div class="p-col-6">
+          <p-fieldset *ngIf="displayEnvent">
+            <ng-template pTemplate="header">Details</ng-template>
 
+            <p-scrollPanel [style]="{height: '600px'}"  >
+
+              <div>
+                <h5 class="p-text-uppercase">Envenement</h5>
+                <hr>
+                <table class="task" style="border: none;">
+                  <tr>
+                    <td style="width: 45%" class="p-text-bold">Type d'evenement </td>
+                    <td>{{envenement?.typeEvenement}}</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 45%" class="p-text-bold">Localisation: </td>
+                    <td>{{envenement?.localisation}}</td>
+                  </tr>
+                  <tr>
+                    <td class="p-text-bold">Date de debut: </td>
+                    <td>{{envenement?.startAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="p-text-bold">Date de fin: </td>
+                    <td>{{envenement?.endAt | date: 'dd-MM-yyyy H:m:s'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="p-text-bold">Personnes : </td>
+                    <td>
+                      <p-chip styleClass="recapChip"
+                              *ngFor="let items of envenement?.entite; let i=index"
+                              label="{{items.description}}&nbsp;{{items.description2}}"></p-chip>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-text-bold">Enqueteurs: </td>
+                    <td>
+                      <p-chip styleClass="recapChip"
+                              *ngFor="let items of envenement?.utilisateur; let i=index"
+                              label="{{items.nom}}&nbsp;{{items.prenom}}"></p-chip>
+                    </td>
+                  </tr>
+
+                </table>
+              </div>
+              <div>
+                <h5 class="p-text-uppercase">RAPPORT</h5>
+                <hr>
+                <p-scrollPanel [style]="{width: '100%', height: '250px'}">
+                  <div [innerHTML]="envenement?.resume"></div>
+                </p-scrollPanel>
+              </div>
+              <div>
+                <h5 class="p-text-uppercase">PIECES JOINTES</h5>
+                <hr>
+                <div class="p-grid" style="margin-top: 1em">
+                  <div style="margin-left: 1rem" *ngFor="let items of envenement?.preuves ; let i=index" class="p-col">
+                    <p-button class="p-button-outlined p-button-secondary" (click)="downloadFile(items.files)" label="{{items.files}}" icon="pi pi-download"></p-button>
+                  </div>
+                </div>
+
+              </div>
+            </p-scrollPanel>
+          </p-fieldset>
         </div>
       </div>
 
     </p-tabPanel>
-    <p-tabPanel header="Pieces a convictions">
-      Content 3
-    </p-tabPanel>
     <p-tabPanel header="Graphes">
-      Content 3
+
+      <div *ngIf="eventChartReady">
+
+        <p-timeline [value]="chartEvents"  align="top">
+          <ng-template pTemplate="content" let-event>
+            <p-card [header]="event.typeEvenement" [subheader]="event.startAt">
+              <div style="max-height:150px" [innerHTML]="(event.resume.length>200)? (event.resume | slice:0:200)+'..':(event.resume)"></div>
+            </p-card>
+          </ng-template>
+        </p-timeline>
+      </div>
+
+
     </p-tabPanel>
-    <p-tabPanel header="Administration">
-      Content 3
+    <p-tabPanel  [disabled]="isConsultant || !isAffaireUtilisateur || !isAdmin" header="Administration">
+      <p-slideMenu [model]="adminPanelItems"></p-slideMenu>
     </p-tabPanel>
   </p-tabView>
 

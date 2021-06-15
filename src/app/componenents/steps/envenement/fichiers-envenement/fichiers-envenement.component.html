@@ -1,0 +1,53 @@
+<div class="card">
+
+  <p-toast></p-toast>
+
+  <p-progressBar class="loading-bar" *ngIf="inProgress" [value]="progress"></p-progressBar>
+
+  <ngx-dropzone [disabled]="imagesUploaded" [expandable]="true" accept="image/*"   (change)="onSelect($event)">
+    <ngx-dropzone-label>Cliquer pour charger les images ici</ngx-dropzone-label>
+    <ngx-dropzone-image-preview [removable]="true" (removed)="onRemove(f)"  ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f">
+      <ngx-dropzone-label>
+      </ngx-dropzone-label>
+    </ngx-dropzone-image-preview>
+  </ngx-dropzone>
+  <button (click)="submit(1)" [disabled]="(files.length <= 0 && loadingCompleted != null) || imagesUploaded" style="width: 100%" pButton pRipple type="button" label="Envoyer les images" class="p-button-info"></button>
+
+
+
+  <ngx-dropzone [disabled]="videosUploaded" [expandable]="true" accept="video/*"   (change)="onVideoSelect($event)">
+    <ngx-dropzone-label>Cliquer pour charger les videos ici</ngx-dropzone-label>
+    <ngx-dropzone-video-preview style="width: 300px!important;" [removable]="true" (removed)="onVideoRemove(f)" ngProjectAs="ngx-dropzone-preview" *ngFor="let f of videofiles" [file]="f">
+      <div style="width: 100%">
+        <ngx-dropzone-label>
+          {{ f.name }} ({{ f.type }})
+        </ngx-dropzone-label>
+      </div>
+    </ngx-dropzone-video-preview>
+  </ngx-dropzone>
+  <button (click)="submit(2)" [disabled]="(videofiles.length <= 0 ) || videosUploaded" style="width: 100%" pButton pRipple type="button" label="Envoyer les videos" class="p-button-info"></button>
+
+
+
+  <ngx-dropzone accept=".mp3,audio/*,
+  .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain, application/pdf"
+                [disabled]="otherUploaded" [expandable]="true" (change)="onOtherSelect($event)">
+    <ngx-dropzone-label>Joindre les documents ici</ngx-dropzone-label>
+    <ngx-dropzone-preview *ngFor="let f of otherfiles" [removable]="true" (removed)="onOtherRemove(f)">
+      <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+    </ngx-dropzone-preview>
+  </ngx-dropzone>
+  <button (click)="submit(3)" [disabled]="(otherfiles.length <= 0 ) || otherUploaded" style="width: 100%" pButton pRipple type="button" label="Envoyer les autres fichiers" class="p-button-info"></button>
+
+  <hr>
+
+  <div class="p-d-flex p-jc-between">
+    <div>
+      <p-button label="Precedent"  (click)="previousPage()" icon="pi pi-angle-left"></p-button>
+    </div>
+    <div>
+      <p-button label="Suivant" (click)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+    </div>
+  </div>
+
+</div>

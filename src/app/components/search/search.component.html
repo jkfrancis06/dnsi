@@ -1,0 +1,66 @@
+<app-navbar></app-navbar>
+
+<div class="p-d-flex">
+  <div class="p-col-6">
+    <h3>Rechercher</h3>
+    <hr>
+    <div style="margin-top: 1rem">
+      <h4></h4>
+    </div>
+
+    <div class="p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12 p-md-12">
+        <label for="entite">Element à rechercher: </label>
+        <p-selectButton  id="entite" [options]="entityTypes" [(ngModel)]="selectedEntityType" optionLabel="name" optionValue="value"></p-selectButton>
+      </div>
+      <div class="p-field p-col-12 p-md-12">
+        <label for="searchType">Type de recherche:</label>
+        <p-selectButton  id="searchType" [options]="searchTypes" [(ngModel)]="searchType" optionLabel="name" optionValue="value"></p-selectButton>
+      </div>
+      <div *ngIf="selectedEntityType == 1" class="p-field p-col-12 p-md-6">
+        <label for="nom">Nom:</label>
+        <input id="nom" type="text" pInputText>
+      </div>
+      <div *ngIf="selectedEntityType == 1"  class="p-field p-col-12 p-md-6">
+        <label for="prenom">Prenom:</label>
+        <input id="prenom" type="text" pInputText>
+      </div>
+      <div *ngIf="selectedEntityType != 1"  class="p-field p-col-12 p-md-6">
+        <label for="description">Description :</label>
+        <input id="description" type="text" pInputText>
+      </div>
+      <div  *ngIf="selectedEntityType != 1"  class="p-field p-col-12 p-md-6">
+        <label for="description">Description 1:</label>
+        <input id="description1" type="text" pInputText>
+      </div>
+      <div  *ngIf="selectedEntityType != 1"  class="p-field p-col-12 p-md-6">
+        <label for="immatriculation">Immatriculation:</label>
+        <input id="immatriculation" type="text" pInputText>
+      </div>
+      <div *ngIf="selectedEntityType == 1"  class="p-field p-col-12 p-md-6">
+        <label for="numCarte">Numero de carte:</label>
+        <input id="numCarte" type="text" pInputText>
+      </div>
+      <div *ngIf="selectedEntityType == 1"  class="p-field p-col-12 p-md-6">
+        <label for="numPassport">Numero de passport:</label>
+        <input id="numPassport" type="text" pInputText>
+      </div>
+      <div *ngIf="selectedEntityType == 1"  class="p-field p-col-12 p-md-6">
+        <label for="pays">Pays d'origine:</label>
+        <input id="pays" type="text" pInputText>
+      </div>
+      <div style="margin-top: 1em" class="p-field p-col-12 p-md-12">
+        <button class="p-button-info" label="Rechercher" pButton type="button" icon="pi pi-search" iconPos="left"></button>
+      </div>
+    </div>
+
+
+  </div>
+
+  <p-divider layout="vertical"></p-divider>
+  <div class="p-col-6">
+    <h3>Resultats</h3>
+    <hr>
+  </div>
+</div>
+

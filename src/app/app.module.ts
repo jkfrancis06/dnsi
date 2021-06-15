@@ -62,6 +62,15 @@ import { EntitesImpliquesComponent } from './componenents/steps/envenement/entit
 import { UtilisateurImpliquesComponent } from './componenents/steps/envenement/utilisateur-impliques/utilisateur-impliques.component';
 import { RecapEnvenementComponent } from './componenents/steps/envenement/recap-envenement/recap-envenement.component';
 import { RapportInitialComponent } from './componenents/steps/envenement/rapport-initial/rapport-initial.component';
+import { FichiersEnvenementComponent } from './componenents/steps/envenement/fichiers-envenement/fichiers-envenement.component';
+import {ChipModule} from "primeng/chip";
+import {FileSaverModule} from "ngx-filesaver";
+import {TimelineModule} from "primeng/timeline";
+import { RelationWithComponent } from './componenents/steps/personne/relation-with/relation-with.component';
+import {SlideMenuModule} from "primeng/slidemenu";
+import { SearchComponent } from './components/search/search.component';
+import {CheckboxModule} from "primeng/checkbox";
+import {SelectButtonModule} from "primeng/selectbutton";
 
 @NgModule({
   declarations: [
@@ -81,7 +90,10 @@ import { RapportInitialComponent } from './componenents/steps/envenement/rapport
     EntitesImpliquesComponent,
     UtilisateurImpliquesComponent,
     RecapEnvenementComponent,
-    RapportInitialComponent
+    RapportInitialComponent,
+    FichiersEnvenementComponent,
+    RelationWithComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
@@ -132,7 +144,13 @@ import { RapportInitialComponent } from './componenents/steps/envenement/rapport
     InputTextareaModule,
     NgxDocViewerModule,
     RadioButtonModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    ChipModule,
+    FileSaverModule,
+    TimelineModule,
+    SlideMenuModule,
+    CheckboxModule,
+    SelectButtonModule
 
   ],
   providers: [

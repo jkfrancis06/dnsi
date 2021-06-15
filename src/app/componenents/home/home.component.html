@@ -25,7 +25,7 @@
 
 
         <p-table
-          [scrollable]="true" scrollHeight="200px"
+          [scrollable]="true" scrollHeight="100vh"
           [resizableColumns]="true"
           [value]="taches"
           selectionMode="single" [(selection)]="tache" dataKey="id"
@@ -118,7 +118,7 @@
       <p-fieldset legend="Details" [style]="{height: '100%'}">
 
         <div *ngIf="show_task == true">
-          <p-scrollPanel [style]="{height: '500px'}"  >
+          <p-scrollPanel [style]="{height: '100%'}"  >
 
             <div [hidden]="tache_details_loading == false">
               <div  class="p-field p-col-12 p-md-6">
@@ -140,7 +140,7 @@
             <div>
               <h5>Demande</h5>
               <hr>
-              <table class="task" style="border: none;font-size: 0.9rem !important;">
+              <table class="task" style="border: none;">
                 <tr>
                   <td style="width: 45%">Affaire: </td>
                   <td>{{task?.affaire?.numeroMatricule}}, {{task?.affaire?.nom}}</td>

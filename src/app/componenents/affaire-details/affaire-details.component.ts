@@ -7,6 +7,10 @@ import {ConfirmationService} from 'primeng/api';
 import {Subscription} from "rxjs";
 import {PersonneService} from "../../services/personne/personne.service";
 import {ConstantsService} from "../../services/general/constants.service";
+import {EnvenementService} from "../../services/envenement/envenement.service";
+import {HttpClient} from "@angular/common/http";
+import {FileSaverService} from "ngx-filesaver";
+import {DatePipe} from "@angular/common";
 
 
 interface City {
@@ -18,7 +22,7 @@ interface City {
   selector: 'app-affaire-details',
   templateUrl: './affaire-details.component.html',
   styleUrls: ['./affaire-details.component.css'],
-  providers: [MessageService,ConfirmationService]
+  providers: [MessageService,ConfirmationService,DatePipe]
 })
 
 
@@ -60,6 +64,7 @@ export class AffaireDetailsComponent implements OnInit {
   personneSteps: MenuItem[] = [];
 
   subscription: Subscription = new Subscription;
+  evenementSubscription: Subscription = new Subscription;
   showEntite: boolean = false;
 
   displayCustom: boolean = false;
@@ -85,6 +90,7 @@ export class AffaireDetailsComponent implements OnInit {
   documentSource: string  = "";
   isPdfVisible: boolean = false;
   deniedAccess: boolean = false;
+  isAdmin:boolean = false
 
   task: any = {
     titre: "Demande d'access",
@@ -104,6 +110,20 @@ export class AffaireDetailsComponent implements OnInit {
   displayEventCreateViewer: boolean = false;
   eventDialog: boolean = false;
   eventSteps: MenuItem[] = [];
+  envenements: any[] = [];
+  envenement : any;
+  SERVER_URL = "";
+  displayEnvent: boolean = false;
+  chartEvents: any[] = [];
+  eventChartReady: boolean = false;
+  adminPanelItems: MenuItem[] = [];
+  removeAffaireUtilisateurDisplay: boolean = false;
+  removeCanConsultDisplay: boolean = false;
+  displayAdminRevoqueModal: boolean = false;
+  affaireDirectors: any[] = [];
+  affaireDirector: any;
+  addAdminstratorModal: boolean = false;
+  selectedAdminstrators: any[] = [];
 
 
   constructor(
@@ -113,7 +133,13 @@ export class AffaireDetailsComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     public personneService: PersonneService,
-    public constService: ConstantsService
+    public constService: ConstantsService,
+    public envenementService: EnvenementService,
+    public constantService: ConstantsService,
+    private httpClient: HttpClient,
+    private _FileSaverService: FileSaverService,
+    public datepipe: DatePipe
+
   ) {
     let local = localStorage.getItem('user')
     if (local != null) {
@@ -127,6 +153,7 @@ export class AffaireDetailsComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.SERVER_URL = this.constService.SERVER_ADDRESS
 
     // @ts-ignore
     this.activatedroute.firstChild.params.subscribe(params => {
@@ -146,13 +173,24 @@ export class AffaireDetailsComponent implements OnInit {
               this.isConsultant = true;
             }
           }
+          this.restApi.getAffaireDirectedBy(this.id).subscribe(
+            response => {
+              for (let i = 0; i< response.length; i++){
+                if (this.user.id === response[i].utilisateur.id && response[i].isRevoked === false){
+                  this.isAdmin = true;
+                }
+              }
+            }
+          )
           this.affaireLoading = false
         },
         error => {
+          this.affaireLoading = false
           console.log(error)
           this.handleError(error)
         }
       )
+
     });
 
     this.eventSteps = [
@@ -167,6 +205,14 @@ export class AffaireDetailsComponent implements OnInit {
       {
         label: 'Enqueteur impliqués',
         routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'utilisateurImpliques'}}]
+      },
+      {
+        label: 'Rapport d\'evenemment',
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'rapportInitial'}}]
+      },
+      {
+        label: 'Fichiers joints',
+        routerLink: ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'fichiersEnvenement'}}]
       },
       {
         label: 'Recapitulatif',
@@ -210,7 +256,94 @@ export class AffaireDetailsComponent implements OnInit {
     });
 
 
+    this.evenementSubscription = this.envenementService.envenementInputComplete$.subscribe((envenementInfo) =>{
+      console.log(envenementInfo)
+      this.eventDialog = false
+      this.envenements.push(envenementInfo)
+      this.messageService.add({severity:'success', summary:'Evenement crée avec succès'});
+      this.envenementService.resetData()
+      this.router.navigate(['/affaire-details/'+this.id])
+      console.log(this.envenements)
+    });
+
+
+    this.adminPanelItems = [
+      {
+        label: 'Enquêteurs',
+        icon: 'pi pi-fw pi-user',
+        items: [
+          {
+            label: 'Ajouter',
+            command: (event => {
+              this.createAffaireUtilisateur()
+            })
+          },
+          {
+            label: 'Supprimer',
+            command: (event => {
+              this.removeAffaireUtilisateurModal()
+            })
+          }
+        ]
+      },
+      {
+        label: 'Invités',
+        icon: 'pi pi-fw pi-users',
+        items: [
+          {
+            label: 'Revoquer',
+            command: event => {
+              this.removeCanConsultDisplay = true
+            }
+          }
+        ]
+      },
+      {
+        label: 'Administrateurs',
+        icon: 'pi pi-fw pi-briefcase',
+        items: [
+          {
+            label: 'Ajouter',
+            command: event => {
+              this.addAdminDialog()
+            }
+          },
+          {
+            label: 'Revoquer',
+            command: event => {
+              this.getAffaireDirectors()
+            }
+          }
+        ]
+      },
+      {
+        label: 'Ce dossier',
+        icon: 'pi pi-fw pi-folder',
+        items: [
+          {label: 'Clôturer', icon: 'pi pi-fw pi-circle'},
+          {label: 'Réouvrir', icon: 'pi pi-fw pi-open'}
+        ]
+      }
+    ];
+
+
+
   }
+
+  revoquerConsultant(index:any,id:any){
+    this.restApi.revoquerConsult(id).subscribe(
+      response => {
+        console.log(response)
+        console.log(index)
+        console.log(this.affaire.canConsults)
+        this.affaire.canConsults[index] = response
+      },
+      error => {
+        this.handleError(error)
+      }
+    )
+  }
+
 
 
   handleChange($event: any) {
@@ -253,12 +386,32 @@ export class AffaireDetailsComponent implements OnInit {
         this.restApi.getAffaireEnvenements(this.id).subscribe(
           response => {
             console.log(response)
+            this.envenements = response
           },
           error => {
               this.handleError(error)
           }
         )
     }
+
+    if (this.index === 3) {   // timeline
+      this.restApi.getAffaireEnvenements(this.id).subscribe(
+        response => {
+          this.chartEvents = response
+          this.eventChartReady = true
+        },
+        error => {
+          this.handleError(error)
+        }
+      )
+    }
+
+    if (this.index === 4) { // admin panel
+
+
+
+    }
+
   }
 
   handleError(error: any){
@@ -351,6 +504,28 @@ export class AffaireDetailsComponent implements OnInit {
       accept: () => {
         this.removeAffaireUtilisateur(affaireUtilisateur)
       }
+    });
+  }
+
+  confirmInvite(index: any,id: any) {
+    this.confirmationService.confirm({
+      message: 'Êtes vous sûr de revoquer l\'accès a cet invité ?',
+      accept: () => {
+          console.log(index)
+          this.revoquerConsultant(index,id)
+      },
+      key: "invitesConfirm"
+    });
+  }
+
+  confirmRevoqueDir(index: any,id: any) {
+    this.confirmationService.confirm({
+      message: 'Êtes vous sûr de voiloir revoquer les droits de cet administrateur ?',
+      accept: () => {
+        console.log(index)
+        this.revoqueAffaireDir(index,id)
+      },
+      key: "revoqueConfirm"
     });
   }
 
@@ -451,5 +626,94 @@ export class AffaireDetailsComponent implements OnInit {
 
   close() {
     console.log('ok')
+  }
+
+
+
+  onEnvenementRowSelect(envent: any) {
+    this.envenement = envent
+    this.displayEnvent = true
+  }
+
+  downloadFile(files: any) {
+    this.httpClient.get(this.SERVER_URL+"/file/get/"+files, {
+      observe: 'response',
+      responseType: 'blob'
+    }).subscribe(res => {
+      this._FileSaverService.save(res.body, files);
+    });
+    return;
+  }
+
+  removeAffaireUtilisateurModal() {
+    this.removeAffaireUtilisateurDisplay = true
+  }
+
+  getAffaireDirectors(){
+    this.restApi.getAffaireDirectedBy(this.id).subscribe(
+      response => {
+        console.log(response)
+        this.displayAdminRevoqueModal = true
+        this.affaireDirectors = response
+      },
+      error => {
+        this.handleError(error)
+      }
+    )
+  }
+
+  revoqueAffaireDir(index:any, id: any){
+      this.restApi.putAffaireDirectedBy(id).subscribe(
+        response => {
+          this.affaireDirectors[index] = response
+        },
+        error => {
+          this.handleError(error)
+        }
+      )
+  }
+
+
+  addAdminDialog() {  // show dialog to assign admin to affaire
+    this.depUtilisateurs = []
+    this.selectedAdminstrators = []
+    this.addAdminstratorModal = true
+    this.restApi.getAffaireDirectedBy(this.id).subscribe(
+      response => {
+        console.log(response)
+        this.affaireDirectors = response
+        for (let i = 0; i<this.affaire.affaireUtilisateurs.length; i++){
+          let responseDepUser: DepUser = {};
+          responseDepUser.id = this.affaire.affaireUtilisateurs[i].utilisateur.id
+          responseDepUser.name = this.affaire.affaireUtilisateurs[i].utilisateur.nom +'  '+ this.affaire.affaireUtilisateurs[i].utilisateur.prenom
+          responseDepUser.inactive = false
+          for (let j = 0; j<this.affaireDirectors.length; j++){
+            if (this.affaireDirectors[j].utilisateur.id === this.affaire.affaireUtilisateurs[i].utilisateur.id){
+              responseDepUser.inactive = true
+            }
+          }
+          this.depUtilisateurs = [...this.depUtilisateurs,responseDepUser]
+        }
+      }
+    )
+  }
+
+  createDirectors() {
+    this.addAdminstratorModal = false
+    console.log(this.selectedAdminstrators)
+    for (let i = 0; i< this.selectedAdminstrators.length; i++){
+      let data = {
+        utilisateur: "/api/utilisateurs/"+this.selectedAdminstrators[i],
+        affaire: "/api/affaires/"+this.id
+      }
+      this.restApi.postAffaireDirectedBy(data).subscribe(
+        response =>{
+
+        },
+        error => {
+          this.handleError(error)
+        }
+      )
+    }
   }
 }

@@ -38,5 +38,7 @@ export class ConstantsService {
   public GET_VEHICULES = "/api/vehicules?"
   public GET_ORGANISATION = "/api/organisation?"
 
+  public AFFAIRE_DIRECTED = "/api/affaire_directeds"
+
   constructor() { }
 }

@@ -16,7 +16,7 @@ export class PersonneService {
     informationsGenerales: {
       nom: "",
       prenom: "",
-      dateNaissance: "",
+      dateNaissance: '',
       lieuNaissance: "",
       numPassport: "",
       numCarte: "",
@@ -54,7 +54,7 @@ export class PersonneService {
       informationsGenerales: {
         nom: "",
         prenom: "",
-        dateNaissance: "",
+        dateNaissance: '',
         lieuNaissance: "",
         numPassport: "",
         numCarte: "",

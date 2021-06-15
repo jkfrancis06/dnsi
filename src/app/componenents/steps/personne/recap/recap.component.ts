@@ -204,7 +204,7 @@ export class RecapComponent implements OnInit {
       cat: this.personneService.personneInformation.type.value,
       nom: this.personneService.personneInformation.informationsGenerales.nom,
       prenom: this.personneService.personneInformation.informationsGenerales.prenom,
-      dateNaissance: this.personneService.personneInformation.informationsGenerales.dateNaissance,
+      dateNaissance: this.personneService.personneInformation.informationsGenerales.dateNaissance as any,
       lieuNaissance: this.personneService.personneInformation.informationsGenerales.nationalite,
       numPassport: this.personneService.personneInformation.informationsGenerales.numPassport,
       numCarte: this.personneService.personneInformation.informationsGenerales.numCarte,
@@ -257,6 +257,11 @@ export class RecapComponent implements OnInit {
     }
 
     console.log(personne)
+
+    if (personne.dateNaissance === ''){
+      personne.dateNaissance = null
+    }
+
     this.apiService.createPersonne(personne).subscribe(
       response => {
         this.personneService.setPersonneCreated(response)

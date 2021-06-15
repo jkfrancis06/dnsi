@@ -6,7 +6,7 @@
 <div  #context_menu  class="card" style="margin-top: 1rem; height: 100vh">
   <div class="p-d-flex">
     <p-dialog
-      header="Creation d'une affaire" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
+      header="Nouveau dossier" [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000"
       [draggable]="true" [resizable]="true"
       [(visible)]="displayAffaireCreateViewer">
 
@@ -121,9 +121,9 @@
 
     </p-dialog>
 
-    <div class="p-col-6">
-      <p-scrollPanel [style]="{height: '600px'}"  >
-        <p-fieldset legend="Mes affaires">
+
+      <p-scrollPanel [style]="{height: '100vh'}"  >
+        <p-fieldset legend="Mes dossiers">
 
           <div [hidden]="affairesLoading == false" class="p-field p-col-12 p-md-6">
             <p-skeleton styleClass="p-mb-2"></p-skeleton>
@@ -136,7 +136,7 @@
           <button
             (click)="displayAffaireDialog()"
             style="margin-bottom: 1rem" class="p-button-info" pButton type="button" icon="pi pi-plus"
-            iconPos="left" label="Nouvelle affaire">
+            iconPos="left" label="Nouveau dossier">
           </button>
 
 
@@ -177,7 +177,7 @@
 
 
         <div style="margin-top: 2em">
-          <p-fieldset legend="Toutes les affaire du departement">
+          <p-fieldset legend="Tous les dossiers">
 
             <div [hidden]="depAffairesLoading == false" class="p-field p-col-12 p-md-6">
               <p-skeleton styleClass="p-mb-2"></p-skeleton>
@@ -261,11 +261,13 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-affaire>
-                <tr (dblclick)="onAffaireRowDblClick(affaire)" [pSelectableRowDblClick]="affaire">
+                <tr (dblclick)="onAffaireRowDblClick(affaire.affaire)" [pSelectableRowDblClick]="affaire">
                   <td style="font-weight: bold"><i class="pi pi-folder-open"></i></td>
-                  <td>{{affaire.numeroMatricule}}</td>
-                  <td>{{affaire.nom}}</td>
-                  <td>{{affaire.statut}}</td>
+                  <td>{{affaire.affaire.numeroMatricule}}</td>
+                  <td>{{affaire.affaire.nom}}</td>
+                  <td *ngIf="affaire.statut === '0'" style="color: #4CAF50">VALIDE</td>
+                  <td *ngIf="affaire.statut === '1'" style="color: orange">EXPIRE</td>
+                  <td *ngIf="affaire.statut === '3'" style="color: red">REVOQUE</td>
                 </tr>
               </ng-template>
             </p-table>
@@ -274,101 +276,5 @@
       </p-scrollPanel>
     </div>
 
-    <p-divider layout="vertical"></p-divider>
-
-    <div class="p-col-6">
-
-      <p-fieldset [hidden]="showAffaire == false" legend="Details" [style]="{height: '100%'}">
-
-        <div>
-          <p-scrollPanel [style]="{height: '600px'}"  >
-
-            <div>
-              <h5>Affaire</h5>
-              <hr>
-              <table class="task" style="border: none;font-size: 0.9rem !important;">
-                <tr>
-                  <td style="width: 45%">Numero de dossier: </td>
-                  <td>{{affaire?.numeroMatricule}}</td>
-                </tr>
-                <tr>
-                  <td style="width: 45%">Nom: </td>
-                  <td>{{affaire?.nom}}</td>
-                </tr>
-                <tr>
-                  <td>Statut: </td>
-                  <td>{{affaire?.statut}}</td>
-                </tr>
-                <tr>
-                  <td>Accreditation: </td>
-                  <td>Niveau : {{affaire?.niveauAccreditation}}</td>
-                </tr>
-                <tr>
-                  <td>Crée le: </td>
-                  <td>{{affaire?.createdAt | date: 'dd-MM-yyyy H:m:s'}}</td>
-                </tr>
-                <tr>
-                  <td>Departement en charge</td>
-                  <td style="text-transform: full-width">{{affaire?.departement.nom}}</td>
-                </tr>
-              </table>
-            </div>
-            <div>
-              <h5>Rapport initial</h5>
-              <hr>
-              <div [innerHTML]="affaire?.resume"></div>
-            </div>
-
-
-            <div>
-              <h5>Affectés a l'affaire</h5>
-              <hr>
-              <div style="margin-bottom: 1rem; text-align: center!important;">
-                <p-table
-                  [scrollable]="true" scrollHeight="100px"
-                  [resizableColumns]="true"
-                  [value]="affaire?.affaireUtilisateurs"
-                  selectionMode="single" dataKey="id"
-                  styleClass="p-datatable-sm p-datatable-gridlines ">
-                  <ng-template pTemplate="colgroup">
-                    <colgroup>
-                      <col style="width:14%">
-                      <col style="width:35%">
-                      <col style="width:25%">
-                    </colgroup>
-                  </ng-template>
-                  <ng-template pTemplate="header" >
-                    <tr>
-                      <th pResizableColumn></th>
-                      <th pResizableColumn>Participant</th>
-                      <th pResizableColumn>Date d'ajout</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-affaireUser>
-                    <tr [pSelectableRow]="affaireUser" >
-                      <td>
-                        <i class="pi pi-user"></i>
-                      </td>
-                      <td style="text-transform: uppercase!important;">
-                        {{affaireUser.utilisateur.nom}}  {{affaireUser.utilisateur.prenom}}
-                      </td>
-                      <td>{{affaireUser.createdAt | date: 'dd-MM-yyyy H:m:s'}}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            </div>
-          </p-scrollPanel>
-          <button
-            (click)="affaireDetails()"
-            style="margin-top: 2em" class="p-button-info"
-            pButton type="button"  label="Plus de details....">
-          </button>
-        </div>
-      </p-fieldset>
-
-
-    </div>
-
   </div>
-</div>
+

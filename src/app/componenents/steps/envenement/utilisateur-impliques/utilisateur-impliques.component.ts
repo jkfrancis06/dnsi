@@ -73,6 +73,6 @@ export class UtilisateurImpliquesComponent implements OnInit {
   }
 
   nextPage() {
-    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'recapEnvenement'}}]);
+    this.router.navigate( ['/affaire-details/'+ this.id ,{outlets:{eventRoute:'rapportInitial'}}]);
   }
 }

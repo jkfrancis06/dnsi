@@ -17,8 +17,9 @@ export class EnvenementService {
       startAt: "" as any,
       duration: "",
       endAt: "" as any,
-      geoLocalisation: ""
+      geoLocalisation: "",
     },
+    resume: "",
     entitesInfo: [] as any,
     utilisateursInfo: [] as any,
     preuvesInfo: [] as any
@@ -47,6 +48,7 @@ export class EnvenementService {
         endAt: "",
         geoLocalisation: ""
       },
+      resume: "",
       entitesInfo: [] as any,
       utilisateursInfo: [] as any,
       preuvesInfo: [] as any
@@ -66,6 +68,9 @@ export class EnvenementService {
   }
 
   complete() {
-    this.envenementInputComplete.next(this.envenementInformation);
+    this.envenementInputComplete.next(this.envenementCreated);
   }
+
+
+
 }

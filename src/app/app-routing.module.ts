@@ -15,12 +15,17 @@ import {GeneralComponent} from "./componenents/steps/envenement/general/general.
 import {EntitesImpliquesComponent} from "./componenents/steps/envenement/entites-impliques/entites-impliques.component";
 import {UtilisateurImpliquesComponent} from "./componenents/steps/envenement/utilisateur-impliques/utilisateur-impliques.component";
 import {RecapEnvenementComponent} from "./componenents/steps/envenement/recap-envenement/recap-envenement.component";
+import {RapportInitialComponent} from "./componenents/steps/envenement/rapport-initial/rapport-initial.component";
+import {FichiersEnvenementComponent} from "./componenents/steps/envenement/fichiers-envenement/fichiers-envenement.component";
+import {RelationWithComponent} from "./componenents/steps/personne/relation-with/relation-with.component";
+import {SearchComponent} from "./components/search/search.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'logout', component: LogoutComponent},
   { path: '', component: HomeComponent, canActivate: [AuthGuard]},
   { path: 'affaires', component: AffaireComponent, canActivate: [AuthGuard]},
+  { path: 'recherche', component: SearchComponent, canActivate: [AuthGuard]},
 
   // personne steps routing
   { path: 'affaire-details/:id', component: AffaireDetailsComponent, canActivate: [AuthGuard], children: [
@@ -30,9 +35,12 @@ const routes: Routes = [
       {path: 'fichiers', component: FichiersComponent, outlet: 'entiteRoute'},
       {path: 'recap', component: RecapComponent, outlet: 'entiteRoute'},
       {path: 'type', component: TypeComponent, outlet: 'entiteRoute'},
+      {path: 'relationWith', component: RelationWithComponent, outlet: 'entiteRoute'},
       {path: 'envenement', component: GeneralComponent, outlet: 'eventRoute'},
       {path: 'entitesImpliques', component: EntitesImpliquesComponent, outlet: 'eventRoute'},
       {path: 'utilisateurImpliques', component: UtilisateurImpliquesComponent, outlet: 'eventRoute'},
+      {path: 'rapportInitial', component: RapportInitialComponent, outlet: 'eventRoute'},
+      {path: 'fichiersEnvenement', component: FichiersEnvenementComponent, outlet: 'eventRoute'},
       {path: 'recapEnvenement', component: RecapEnvenementComponent, outlet: 'eventRoute'},
     ]},
 

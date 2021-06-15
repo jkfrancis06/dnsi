@@ -169,7 +169,7 @@ export class RestService {
       user = JSON.parse(token_user)
     }
 
-    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.ENVENEMENTS+'?affaire.id='+ affaireId
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.ENVENEMENTS+'?affaire.id='+ affaireId+"&order[startAt]=asc"
       , httpOptions)
       .pipe(
         catchError(this.handleError)
@@ -222,6 +222,33 @@ export class RestService {
     };
 
     return this.http.put(this.constProvider.SERVER_ADDRESS +this.constProvider.UPDATE_TACHE_UTILISATEUR  +'/'+ id
+      ,data, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  revoquerConsult(id:number): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    let data = {
+      isRevoked: true,
+    }
+
+    return this.http.put(this.constProvider.SERVER_ADDRESS +this.constProvider.CAN_CONSULT  +'/'+ id
       ,data, httpOptions)
       .pipe(
         catchError(this.handleError)
@@ -368,6 +395,33 @@ export class RestService {
       );
 
   }
+
+
+
+  createEvenement(data: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.ENVENEMENTS,
+      data
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
 
 
 
@@ -680,6 +734,84 @@ export class RestService {
       );
 
   }
+
+
+  getAffaireDirectedBy(affaireID: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    return this.http.get(this.constProvider.SERVER_ADDRESS +this.constProvider.AFFAIRE_DIRECTED+"?affaire.id="+affaireID
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  putAffaireDirectedBy(id: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+    let data = {
+      isRevoked : true
+    }
+
+    return this.http.put(this.constProvider.SERVER_ADDRESS +this.constProvider.AFFAIRE_DIRECTED+"/"+id,
+      data
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
+  postAffaireDirectedBy(data: any): Observable<any> {
+
+    this.token_data = localStorage.getItem('token-data')
+    let token_data = JSON.parse(this.token_data)
+    this.checkToken(token_data);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '+ token_data.token
+      })
+    };
+
+
+    return this.http.post(this.constProvider.SERVER_ADDRESS +this.constProvider.AFFAIRE_DIRECTED,
+      data
+      ,httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+
+  }
+
+
 
   private handleError (error: HttpErrorResponse) {
     // TODO: seems we cannot use messageService from here...

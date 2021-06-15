@@ -92,10 +92,8 @@ export class AffaireComponent implements OnInit {
     this.apiService.getConsultations().subscribe(
       response => {
         console.log(response)
+        this.consultAffaires = response
         this.depAffairesLoading = false
-        for (let i= 0; i< response.length; i++){
-          this.consultAffaires.push(response[i]['affaire'])
-        }
 
       },
       error => {
@@ -106,9 +104,7 @@ export class AffaireComponent implements OnInit {
   }
 
   onAffaireRowDblClick(affaire:any){
-    console.log(affaire)
-    this.affaire = affaire
-    this.showAffaire = true
+    this.router.navigate(['/affaire-details', affaire.id])
   }
 
   onRowUnselect(){

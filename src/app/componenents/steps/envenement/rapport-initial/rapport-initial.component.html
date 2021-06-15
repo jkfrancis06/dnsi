@@ -1,1 +1,66 @@
-<p>rapport-initial works!</p>
+<p-card>
+
+  <ng-template pTemplate="content">
+    <div  class="p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="resume">Rapport initial <span style="color:red">*</span>: </label>
+        <small *ngIf="resumeInvalid" class="p-error">&nbsp; &nbsp; Le rapport initial est obligatoire</small>
+        <p-editor #resume="ngModel"
+                  required [(ngModel)]="envenementService.envenementInformation.resume" [style]="{'height':'320px'}">
+          <p-header>
+              <span class="ql-formats">
+                <select class="ql-size">
+                  <option value="small">Petit</option>
+                  <option selected></option>
+                  <option value="large">Sous-titre</option>
+                  <option value="huge">Titre</option>
+                </select>
+              </span>
+            <span class="ql-formats">
+                <button class="ql-bold" aria-label="Bold"></button>
+                <button class="ql-italic" aria-label="Italic"></button>
+                <button class="ql-underline" aria-label="Underline"></button>
+                <button class="ql-strike" aria-label="Strike"></button>
+              </span>
+            <span class="ql-formats">
+                <select title="Text Color" class="ql-color" defaultValue="rgb(0, 0, 0)">
+                  <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                  ...
+                  <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+                <span class="ql-format-separator"></span>
+                <select title="Background Color" class="ql-background" defaultValue="rgb(255, 255, 255)">
+                  <option value="rgb(0, 0, 0)" label="rgb(0, 0, 0)"></option>
+                  ...
+                  <option value="rgb(61, 20, 102)" label="rgb(61, 20, 102)"></option>
+                </select>
+            </span>
+            <span class="ql-formats">
+                  <button class="ql-list" value="ordered"></button>
+                  <button class="ql-list" value="bullet"></button>
+                <select title="Text Alignment" class="ql-align" >
+                  <option selected>Gauche</option>
+                  <option value="center" label="Center"></option>
+                  <option value="right" label="Right"></option>
+                  <option value="justify" label="Justify"></option>
+                </select>
+            </span>
+            <span class="ql-formats">
+                <button aria-label="Link" class="ql-link"></button>
+              </span>
+          </p-header>
+        </p-editor>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="p-d-flex p-jc-between">
+      <div>
+        <p-button label="Precedent" (onClick)="previousPage()" icon="pi pi-angle-left"></p-button>
+      </div>
+      <div>
+        <p-button label="Suivant" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+      </div>
+    </div>
+  </ng-template>
+</p-card>

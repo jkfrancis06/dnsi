@@ -23,13 +23,14 @@ export class NavbarComponent implements OnInit {
         routerLink: ['/']
       },
       {
-        label:'Affaires',
+        label:'Dossiers',
         icon:'pi  pi-folder-open',
         routerLink: ['/affaires']
       },
       {
         label:'Recherche',
         icon:'pi pi-search',
+        routerLink: ['/recherche']
       },
       {
         label:'Espace Administration',
