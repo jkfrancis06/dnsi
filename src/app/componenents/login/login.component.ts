@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
           console.log(user)
           this.loadEnd(0);
           this.showViaService(0);
-          this.router.navigate(['/'],{ queryParams: { login: true } });
+          this.router.navigate([''],{ queryParams: { login: true } });
         },
         error => {
           this.loadEnd(0);
