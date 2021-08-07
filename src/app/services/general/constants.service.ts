@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class ConstantsService {
 
-  public SERVER_ADDRESS = 'http://127.0.0.1:8000';
-  public SERVER_SRC_ADDRESS = 'http://127.0.0.1:8000/upload';
+  public SERVER_ADDRESS = 'http://3.129.156.142:8000';
+  public SERVER_SRC_ADDRESS = 'http://3.129.156.142:8000/upload';
 
   public LOGIN_URL = "/api/login_check";
   public USER_TASKS = "/api/utilisateur/tasks";
